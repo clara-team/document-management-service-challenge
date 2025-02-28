@@ -81,7 +81,7 @@ For more details on how to use MinIO, refer to the documentation:
   - OpenAPI specification that includes the contract for the endpoints.
     - Reference: [document-management-open-api.yml](docs/document-management-open-api.yml).
     - You can visualize the content using [Swagger Editor](https://editor-next.swagger.io/).
-  - A docker-compose stack that includes PostgreSQL, LocalStack, and the Document Management Service.
+  - A docker-compose stack that includes PostgreSQL, and the Document Management Service.
   - Integrated tools:
     - **Spring Boot:** The project is pre-configured with Spring Boot.
     - **Spring Data JPA:** For database operations.
@@ -101,16 +101,17 @@ For more details on how to use MinIO, refer to the documentation:
 
 ## Implementation Instructions 🛠️
 
-1. Use this repository as the starting point for your solution.
+1. Use this repository as the starting point for your solution. If possible, create a fork of the repository.
 2. Implement the endpoints as per the provided OpenAPI specification.
 3. Configure an MinIO client.
 4. Configure a connection to PostgreSQL.
 5. Include your database schema script in `docker/init-scripts/schema-init.sql`.
 6. Create the Dockerfile for the `document-management-service`.
 7. Modify the docker-compose.yml file to add the necessary configuration for including the document-management-service in the stack. Ensure that the service correctly connects to PostgreSQL and MinIO.
-8. Once your functionality is ready, validate it using Postman. Please note that you must start the stack using `docker-compose up --build`.
-9. Commit your changes. It is recommended to maintain a clean commit history, ideally using [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0-beta.4/).
-10. Push your changes to a personal GitHub account and share the URL of your solution.
+8. Implement the required functionality for the Document Management Service.
+9. Once your functionality is ready, validate it using Postman. Please note that you must start the stack using `docker-compose up --build`.
+10. Commit your changes. It is recommended to maintain a clean commit history, ideally using [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0-beta.4/).
+11. Push your changes to a personal GitHub account and share the URL of your solution.
 
 **⚠️ Note:**
 All configurations (database credentials, MinIO/S3 settings, etc.) must be externalized using environment variables and configuration files. Avoid hardcoding sensitive information in the source code.
