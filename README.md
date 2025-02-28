@@ -160,3 +160,11 @@ If you have any additional notes, explanations, or assumptions regarding your im
 
 ---
 
+**⚠️ Important Note About the Challenge Completion ⚠️**
+
+Even if you are unable to complete the challenge 100%, please explain why you couldn't proceed, what doubts you had, and any blockers you encountered. We will review each case individually to determine how it impacts the evaluation.
+
+### **Note: Your approach, problem-solving skills, and reasoning are just as important as the final implementation.**
+
+---
+
