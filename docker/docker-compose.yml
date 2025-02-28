@@ -27,8 +27,15 @@ services:
     command: server --console-address ":9001" /data
     volumes:
       - challenge_minio_data:/data
-  # document-management-service:
   # Include all the necessary settings to include a document management service in the stack
+  # Remember to configure this service to limit the memory to 50MB
+  # document-management-service:
+  #    environment:
+  #      - JAVA_OPTS=-Xmx50m -Xms50m
+  #    deploy:
+  #      resources:
+  #        limits:
+  #          memory: 50M
 
 volumes:
   challenge_postgresql_data:
