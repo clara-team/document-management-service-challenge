@@ -10,26 +10,10 @@ services:
       - challenge_postgresql_data:/bitnami/postgresql
       - ./init-scripts:/docker-entrypoint-initdb.d
     environment:
-      - POSTGRESQL_USERNAME={POSTGRES_USER}
-      - POSTGRESQL_PASSWORD={POSTGRES_PASSWORD}
-      - POSTGRESQL_DATABASE={DATABASE_NAME}
-      - POSTGRESQL_POSTGRES_PASSWORD={POSTGRES_ADMIN_PASSWORD} # Password of user "postgres"
-  localstack:
-    container_name: localstack-container
-    image: localstack/localstack
-    ports:
-      - "127.0.0.1:4566:4566"            # LocalStack Gateway
-      - "127.0.0.1:4510-4559:4510-4559"  # external services port range
-    environment:
-      # LocalStack configuration: https://docs.localstack.cloud/references/configuration/
-      - SERVICES=ssm
-      - AWS_DEFAULT_REGION=us-east-1
-      - DEBUG=${DEBUG:-0}
-    volumes:
-      - challenge_localstack_data:/var/lib/localstack
-      - ./init-scripts:/etc/localstack/init
-      - ./init-scripts:/etc/localstack/init/ready.d
-      - /var/run/docker.sock:/var/run/docker.sock
+      - POSTGRESQL_USERNAME={CHANGE_ME}
+      - POSTGRESQL_PASSWORD={CHANGE_ME}
+      - POSTGRESQL_DATABASE=challenge
+      - POSTGRESQL_POSTGRES_PASSWORD={CHANGE_ME} # Password of user "postgres"
   minio:
     image: minio/minio:latest
     container_name: minio
@@ -38,16 +22,16 @@ services:
       - "9000:9000"  # API S3
       - "9001:9001"  # MinIO Web Console
     environment:
-      MINIO_ROOT_USER: minioadmin
-      MINIO_ROOT_PASSWORD: minioadmin
+      MINIO_ROOT_USER: {CHANGE_ME}
+      MINIO_ROOT_PASSWORD: {CHANGE_ME}
     command: server --console-address ":9001" /data
     volumes:
       - challenge_minio_data:/data
+  # document-management-service:
+  # Include all the necessary settings to include a document management service in the stack
 
 volumes:
   challenge_postgresql_data:
-    driver: local
-  challenge_localstack_data:
     driver: local
   challenge_minio_data:
     driver: local

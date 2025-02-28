@@ -143,7 +143,6 @@
 						<includes>
 							<include>**/*.md</include>
 						</includes>
-
 						<flexmark/>
 					</markdown>
 				</configuration>
