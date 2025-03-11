@@ -1,12 +1,19 @@
-package com.clara.ops.challenge.document_management_service_challenge.dto;
+package com.clara.ops.challenge.document_management_service_challenge.controller.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.Valid;
 import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /** The document search filters. */
 @Schema(description = "The document search filters.")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class DocumentSearchFilters {
 
   @JsonProperty("user")
@@ -19,6 +26,5 @@ public class DocumentSearchFilters {
 
   @JsonProperty("tags")
   @Schema(description = "The document tags.")
-  @Valid
   private List<String> tags;
 }

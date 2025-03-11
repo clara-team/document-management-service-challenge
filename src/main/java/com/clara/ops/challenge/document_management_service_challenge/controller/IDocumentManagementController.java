@@ -1,9 +1,9 @@
 package com.clara.ops.challenge.document_management_service_challenge.controller;
 
-import com.clara.ops.challenge.document_management_service_challenge.dto.DocumentDownloadUrl;
-import com.clara.ops.challenge.document_management_service_challenge.dto.DocumentSearchFilters;
-import com.clara.ops.challenge.document_management_service_challenge.dto.PaginatedDocumentSearch;
-import com.clara.ops.challenge.document_management_service_challenge.dto.UploadDocument;
+import com.clara.ops.challenge.document_management_service_challenge.controller.dto.request.DocumentSearchFilters;
+import com.clara.ops.challenge.document_management_service_challenge.controller.dto.response.Document;
+import com.clara.ops.challenge.document_management_service_challenge.controller.dto.response.DocumentDownloadUrl;
+import com.clara.ops.challenge.document_management_service_challenge.controller.dto.response.PaginatedDocumentSearch;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -12,18 +12,13 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Min;
 import java.util.List;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-public interface DocumentManagementControllerInterface {
+public interface IDocumentManagementController {
 
   @Operation(
       summary = "",
@@ -67,7 +62,7 @@ public interface DocumentManagementControllerInterface {
       })
   @RequestMapping(
       value = "/document-management/download/{documentId}",
-      produces = {"*/*"},
+      produces = {MediaType.APPLICATION_JSON_VALUE},
       method = RequestMethod.GET)
   ResponseEntity<DocumentDownloadUrl> downloadDocument(
       @Parameter(in = ParameterIn.PATH, description = "", required = true, schema = @Schema())
@@ -114,28 +109,24 @@ public interface DocumentManagementControllerInterface {
       })
   @RequestMapping(
       value = "/document-management/search",
-      produces = {"application/json", "*/*"},
-      consumes = {"application/json"},
+      produces = {MediaType.APPLICATION_JSON_VALUE},
+      consumes = {MediaType.APPLICATION_JSON_VALUE},
       method = RequestMethod.POST)
   ResponseEntity<PaginatedDocumentSearch> searchDocuments(
       @Parameter(in = ParameterIn.DEFAULT, description = "", required = true, schema = @Schema())
           @Valid
           @RequestBody
-          DocumentSearchFilters body,
-      @Min(0)
-          @Parameter(
+          DocumentSearchFilters filter,
+      @Parameter(
               in = ParameterIn.QUERY,
               description = "Zero-based page index (0..N)",
-              schema = @Schema(defaultValue = "0"))
-          @Valid
+              schema = @Schema(minimum = "0", defaultValue = "0"))
           @RequestParam(value = "page", required = false, defaultValue = "0")
           Integer page,
-      @Min(1)
-          @Parameter(
+      @Parameter(
               in = ParameterIn.QUERY,
               description = "The size of the page to be returned",
               schema = @Schema(minimum = "1", defaultValue = "20"))
-          @Valid
           @RequestParam(value = "size", required = false, defaultValue = "20")
           Integer size,
       @Parameter(
@@ -144,7 +135,6 @@ public interface DocumentManagementControllerInterface {
                   "Sorting criteria in the format: property,(asc|desc). Default sort order is"
                       + " ascending. Multiple sort criteria are supported.",
               schema = @Schema())
-          @Valid
           @RequestParam(value = "sort", required = false)
           List<String> sort);
 
@@ -182,16 +172,35 @@ public interface DocumentManagementControllerInterface {
       })
   @RequestMapping(
       value = "/document-management/upload",
-      produces = {"*/*"},
       consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
       method = RequestMethod.POST)
-  ResponseEntity<Void> uploadDocument(
-      @Parameter(in = ParameterIn.DEFAULT, description = "", required = true, schema = @Schema())
-          @Valid
-          @RequestParam(name = "file")
-          MultipartFile file,
-      @Parameter(in = ParameterIn.DEFAULT, description = "", required = true, schema = @Schema())
-          @Valid
-          @RequestBody
-          UploadDocument body);
+  ResponseEntity<Document> uploadDocument(
+      @Parameter(
+              in = ParameterIn.DEFAULT,
+              description = "The user who uploaded the document.",
+              required = true,
+              schema = @Schema())
+          @RequestParam(value = "user")
+          String user,
+      @Parameter(
+              in = ParameterIn.DEFAULT,
+              description = "The document name.",
+              required = true,
+              schema = @Schema())
+          @RequestParam(value = "name")
+          String name,
+      @Parameter(
+              in = ParameterIn.DEFAULT,
+              description = "The document tags.",
+              required = true,
+              schema = @Schema())
+          @RequestParam(value = "tags")
+          List<String> tags,
+      @Parameter(
+              in = ParameterIn.DEFAULT,
+              description = "The multipartfile file with binary data.",
+              required = true,
+              schema = @Schema())
+          @RequestPart(value = "file")
+          MultipartFile file);
 }
