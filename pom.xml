@@ -74,12 +74,6 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<!-- Bean Validation API support -->
-		<dependency>
-			<groupId>org.openapitools</groupId>
-			<artifactId>jackson-databind-nullable</artifactId>
-			<version>${openapitools.version}</version>
-		</dependency>
 		<!-- SpringDoc dependencies -->
 		<dependency>
 			<groupId>org.springdoc</groupId>

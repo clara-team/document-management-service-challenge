@@ -8,8 +8,6 @@ import com.clara.ops.challenge.document_management_service_challenge.mapper.IDoc
 import com.clara.ops.challenge.document_management_service_challenge.service.IDocumentManagementService;
 import com.clara.ops.challenge.document_management_service_challenge.service.dto.DocumentSearchDTO;
 import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,8 +16,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 public class DocumentManagementControllerImp implements IDocumentManagementController {
-
-  private static final Logger log = LoggerFactory.getLogger(DocumentManagementControllerImp.class);
 
   @Autowired private IDocumentManagementMapper documentManagementMapper;
   @Autowired private IDocumentManagementService documentManagementService;

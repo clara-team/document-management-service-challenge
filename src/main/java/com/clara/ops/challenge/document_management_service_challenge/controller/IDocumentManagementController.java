@@ -11,7 +11,6 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -114,7 +113,6 @@ public interface IDocumentManagementController {
       method = RequestMethod.POST)
   ResponseEntity<PaginatedDocumentSearch> searchDocuments(
       @Parameter(in = ParameterIn.DEFAULT, description = "", required = true, schema = @Schema())
-          @Valid
           @RequestBody
           DocumentSearchFilters filter,
       @Parameter(

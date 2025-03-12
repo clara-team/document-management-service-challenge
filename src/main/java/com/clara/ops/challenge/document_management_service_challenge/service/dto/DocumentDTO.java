@@ -16,4 +16,5 @@ public class DocumentDTO {
   private Integer size;
   private String type;
   private String createdAt;
+  private String pathFile;
 }
