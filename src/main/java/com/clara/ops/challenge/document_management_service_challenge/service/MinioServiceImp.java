@@ -36,7 +36,7 @@ public class MinioServiceImp implements IMinioService {
           .filename(objectName)
           .fileSize(fileSize)
           .contentType(fileType)
-              .pathFile(pathFile)
+          .pathFile(pathFile)
           .build();
 
     } catch (Exception e) {
