@@ -13,9 +13,9 @@ public class SpringDocConfig {
     return new OpenAPI()
         .info(
             new Info()
-                .title("Document Management API")
+                .title("Clara Challenge - Document Management API")
                 .version("1.0.0")
-                .description("API for document management"));
+                .description("API for document management by Juan Pachon"));
   }
 
   /** Bean post-processor that prevents the Kotlin customizer from loading */
