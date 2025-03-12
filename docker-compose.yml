@@ -1,0 +1,120 @@
+version: '3.8'
+
+services:
+  # PostgreSQL database
+  postgres:
+    image: postgres:16
+    container_name: clara-document-challenge-postgres
+    environment:
+      POSTGRES_USER: clara_bd_user
+      POSTGRES_PASSWORD: clara_bd_password
+      POSTGRES_DB: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/init-scripts:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U clara_bd_user -d postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - document-network
+    restart: unless-stopped
+
+  # MinIO object storage
+  minio:
+    image: minio/minio:latest
+    container_name: clara-document-challenge-minio
+    environment:
+      MINIO_ROOT_USER: clara_minio_user
+      MINIO_ROOT_PASSWORD: clara_minio_password
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_data:/data
+    command: server /data --console-address ":9001"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+    networks:
+      - document-network
+    restart: unless-stopped
+
+  # Document Management Service
+  document-management-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: clara-document-challenge-service
+    depends_on:
+      postgres:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    environment:
+      # Database configuration
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: postgres
+      POSTGRES_USER: clara_bd_user
+      POSTGRES_PASSWORD: clara_bd_password
+      POSTGRES_SCHEMA: document_management
+
+      # MinIO configuration
+      MINIO_ENDPOINT: http://minio:9000
+      MINIO_ACCESS_KEY: clara_minio_user
+      MINIO_SECRET_KEY: clara_minio_password
+      MINIO_BUCKET_NAME: documents
+      MINIO_URL_EXPIRY_TIME: 30
+
+      # Logging configuration
+      LOG_LEVEL_SPRING: INFO
+      LOG_LEVEL_APP: DEBUG
+
+      # Swagger configuration
+      SWAGGER_ENABLED: "true"
+      SWAGGER_UI_ENABLED: "true"
+
+      # Here is where the memory is configured to 50MB
+      JAVA_OPTS: "-Xmx50m -Xms50m -XX:MaxRAM=50m -XX:+UseG1GC -XX:+UseContainerSupport -XX:MaxRAMPercentage=80.0"
+    volumes:
+      - document_tmp:/tmp/document-uploads
+    networks:
+      - document-network
+    restart: unless-stopped
+
+  # MinIO client (mc) to initialize the bucket
+  minio-client:
+    image: minio/mc
+    container_name: clara-document-challenge-minio-client
+    depends_on:
+      minio:
+        condition: service_healthy
+    entrypoint: >
+      /bin/sh -c "
+      sleep 10;
+      mc config host add myminio http://minio:9000 clara_minio_user clara_minio_password;
+      mc mb --ignore-existing myminio/documents;
+      exit 0;
+      "
+    networks:
+      - document-network
+
+networks:
+  document-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+    name: clara_documents_postgres_volume
+  minio_data:
+    name: clara_documents_minio_volume
+  document_tmp:
+    name: clara_documents_tmp_volume
