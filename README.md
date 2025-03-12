@@ -1,5 +1,48 @@
 # 📄 Document Management API Challenge
 
+This is the final solution presented by Juan Manuel Pachon. The solution is finished but I had a couple of challenges and lots of learning during this implementation.
+
+The project should be able to run with just a few commands but if necessary I will gladly explain the details of the solution during a call if necessary.
+
+## Project solution structure Overview
+
+This Spring Boot application uses:
+- PostgreSQL with a custom schema (`document_management`)
+- MinIO for document files storage
+- Docker for containerization
+
+## Building and Running the Application
+
+### Using Docker Compose (Recommended)
+
+1. Build and start all services:
+
+```
+docker-compose up --build
+```
+
+2. Stop all services:
+
+```
+docker-compose down -v
+```
+
+## Accessing the Application
+
+- API: http://localhost:8080/documents-manager/
+- Swagger UI: http://localhost:8080/documents-manager/swagger-ui.html
+- MinIO Console: http://localhost:9001 (login with clara_minio_user/clara_minio_password)
+
+## Container Memory Settings
+
+The application has been configured to work within memory constraints:
+- JVM settings are optimized for container usage
+- Multipart file uploads are configured to stream to disk
+- Memory settings can be adjusted in the `docker-compose.yml` file
+
+
+# \*End of Juan Pachon's section\*
+
 ## Overview 🚀
 
 In this challenge, you will build a backend API service to manage **large PDF documents**. The service must allow users to upload, search, and download PDF documents while efficiently handling resources, given a **memory limitation of 50MB assigned to the document management service container**.
