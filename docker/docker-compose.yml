@@ -26,8 +26,6 @@ services:
     environment:
       - MINIO_ROOT_USER=${MINIO_ROOT_USER}
       - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
-      - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY}
-      - MINIO_SECRET_KEY=${MINIO_SECRET_KEY}
     command: server --console-address ":9001" /data
     volumes:
       - challenge_minio_data:/data
@@ -55,8 +53,8 @@ services:
       - MINIO_SECURE=${MINIO_SECURE}
       - MINIO_BUCKET_NAME=${MINIO_BUCKET_NAME}
       - MINIO_FILE_SIZE=${MINIO_FILE_SIZE}
-      - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY}
-      - MINIO_SECRET_KEY=${MINIO_SECRET_KEY}
+      - MINIO_ROOT_USER=${MINIO_ROOT_USER}
+      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
     deploy:
       resources:
         limits:

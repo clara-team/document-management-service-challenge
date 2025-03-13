@@ -13,8 +13,8 @@ public class MinioConfig {
   private String endpoint;
   private Integer portApi;
   private boolean secure;
-  private String accessKey;
-  private String secretKey;
+  private String rootUser;
+  private String rootPassword;
   private String bucketName;
   private long fileSize;
 
@@ -22,7 +22,7 @@ public class MinioConfig {
   public MinioClient minioClient() {
     return MinioClient.builder()
         .endpoint(endpoint, portApi, secure)
-        .credentials(accessKey, secretKey)
+        .credentials(rootUser, rootPassword)
         .build();
   }
 }
