@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS challenge.document (
 
 CREATE TABLE IF NOT EXISTS challenge.user (
     id SERIAL,
-    name VARCHAR(255),
+    name VARCHAR(255) UNIQUE,
     PRIMARY KEY (id)
 );
 
