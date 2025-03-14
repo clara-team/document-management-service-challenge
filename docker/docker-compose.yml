@@ -16,7 +16,7 @@ services:
       - POSTGRESQL_POSTGRES_PASSWORD=${POSTGRESQL_POSTGRES_PASSWORD} # Password of user "postgres"
   minio:
     image: minio/minio:latest
-    container_name: minio
+    container_name: minio_container
     restart: always
     ports:
       - "9000:9000"  # API S3
@@ -55,17 +55,16 @@ services:
       - MINIO_FILE_SIZE=${MINIO_FILE_SIZE}
       - MINIO_ROOT_USER=${MINIO_ROOT_USER}
       - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
-    deploy:
-      resources:
-        limits:
-          memory: 50M
+    volumes:
+      - challenge_document-management-service_data:/data
 
 volumes:
   challenge_postgresql_data:
     driver: local
   challenge_minio_data:
     driver: local
-
+  challenge_document-management-service_data:
+    driver: local
 networks:
   batch_network:
     driver: bridge
