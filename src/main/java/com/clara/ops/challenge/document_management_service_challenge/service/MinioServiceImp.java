@@ -33,7 +33,7 @@ public class MinioServiceImp implements IMinioService {
       minioUtil.putObject(minioConfig.getBucketName(), multipartFile, pathFile, fileType);
 
       return FileResponseDTO.builder()
-          .filename(objectName)
+          .filename(name)
           .fileSize(fileSize)
           .contentType(fileType)
           .pathFile(pathFile)

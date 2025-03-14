@@ -7,6 +7,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface TagRepository extends JpaRepository<Tag, Integer> {
-
-  Tag findFirstByDocument(Document document);
+  void deleteAllByDocument(Document document);
 }

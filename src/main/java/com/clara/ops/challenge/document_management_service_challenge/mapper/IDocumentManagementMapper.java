@@ -34,14 +34,13 @@ public interface IDocumentManagementMapper {
 
   @Mapping(target = "user", source = "filter.user")
   @Mapping(target = "name", source = "filter.name")
-  @Mapping(target = "tags", source = "filter.tags")
+  @Mapping(target = "tag", source = "filter.tag")
   @Mapping(target = "page", source = "page")
   @Mapping(target = "size", source = "size")
   @Mapping(target = "sort", source = "sort")
   DocumentSearchDTO mapToDocumentSearchDTO(
-      DocumentSearchFilters filter, Integer page, Integer size, List<String> sort);
+      DocumentSearchFilters filter, Integer page, Integer size, String sort);
 
-  @Mapping(target = "documents", source = "documents")
   PaginatedDocumentSearch mapToPaginatedDocumentSearch(
       PaginatedDocumentSearchDTO paginatedDocumentSearchDTO);
 

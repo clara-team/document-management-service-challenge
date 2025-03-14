@@ -1,6 +1,5 @@
 package com.clara.ops.challenge.document_management_service_challenge.service.dto;
 
-import java.util.List;
 import lombok.*;
 
 @NoArgsConstructor
@@ -8,7 +7,7 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
-public class PaginatedDocumentSearchDTO {
-  private MetadataDTO metadata;
-  private List<DocumentDTO> documents;
+public class TagDTO {
+  private String id;
+  private String name;
 }

@@ -2,7 +2,6 @@ package com.clara.ops.challenge.document_management_service_challenge.controller
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,7 +15,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class DocumentSearchFilters {
 
-  @JsonProperty("user")
+  @JsonProperty(value = "user")
   @Schema(description = "The user who uploaded the document.")
   private String user;
 
@@ -24,7 +23,7 @@ public class DocumentSearchFilters {
   @Schema(description = "The document name.")
   private String name;
 
-  @JsonProperty("tags")
-  @Schema(description = "The document tags.")
-  private List<String> tags;
+  @JsonProperty("tag")
+  @Schema(description = "The document tag.")
+  private String tag;
 }

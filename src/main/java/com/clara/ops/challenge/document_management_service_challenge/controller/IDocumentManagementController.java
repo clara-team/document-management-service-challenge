@@ -66,7 +66,7 @@ public interface IDocumentManagementController {
   ResponseEntity<DocumentDownloadUrl> downloadDocument(
       @Parameter(in = ParameterIn.PATH, description = "", required = true, schema = @Schema())
           @PathVariable("documentId")
-          String documentId);
+          Integer documentId);
 
   @Operation(
       summary = "",
@@ -130,11 +130,14 @@ public interface IDocumentManagementController {
       @Parameter(
               in = ParameterIn.QUERY,
               description =
-                  "Sorting criteria in the format: property,(asc|desc). Default sort order is"
-                      + " ascending. Multiple sort criteria are supported.",
-              schema = @Schema())
-          @RequestParam(value = "sort", required = false)
-          List<String> sort);
+                  "Sorting criteria for created_at field: (asc|desc). Default sort order is"
+                      + " ascending.",
+              schema =
+                  @Schema(
+                      allowableValues = {"asc", "desc"},
+                      defaultValue = "asc"))
+          @RequestParam(value = "sort", required = false, defaultValue = "asc")
+          String sort);
 
   @Operation(
       summary = "",

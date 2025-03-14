@@ -20,7 +20,7 @@ public class DocumentManagementControllerImp implements IDocumentManagementContr
   @Autowired private IDocumentManagementMapper documentManagementMapper;
   @Autowired private IDocumentManagementService documentManagementService;
 
-  public ResponseEntity<DocumentDownloadUrl> downloadDocument(String documentId) {
+  public ResponseEntity<DocumentDownloadUrl> downloadDocument(Integer documentId) {
     DocumentDownloadUrl documentDownloadUrl =
         documentManagementMapper.mapDocumentDownloadUrl(
             documentManagementService.downloadDocument(documentId));
@@ -28,7 +28,7 @@ public class DocumentManagementControllerImp implements IDocumentManagementContr
   }
 
   public ResponseEntity<PaginatedDocumentSearch> searchDocuments(
-      DocumentSearchFilters filter, Integer page, Integer size, List<String> sort) {
+      DocumentSearchFilters filter, Integer page, Integer size, String sort) {
     DocumentSearchDTO documentSearchDTO =
         documentManagementMapper.mapToDocumentSearchDTO(filter, page, size, sort);
     PaginatedDocumentSearch paginatedDocumentSearch =

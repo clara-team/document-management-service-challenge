@@ -7,5 +7,5 @@ public interface IDocumentManagementService {
 
   PaginatedDocumentSearchDTO searchDocuments(DocumentSearchDTO documentSearchDTO);
 
-  DocumentDownloadUrlDTO downloadDocument(String documentId);
+  DocumentDownloadUrlDTO downloadDocument(Integer documentId);
 }
