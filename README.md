@@ -158,6 +158,30 @@ Ensure that your solution includes the Dockerfile and database schema script, an
 
 If you have any additional notes, explanations, or assumptions regarding your implementation, feel free to include them in this section. This can help provide more context to reviewers.
 
+#### Additional notes
+
+To success execute the different containers, the following steps must be followed:
+
+1. **Changing environment variables in the /docker/.env file:**
+
+```sh
+# PostgreSQL DataBase Configuration
+POSTGRESQL_HOST=jdbc:postgresql://postgresql:5432/
+POSTGRESQL_USERNAME=<postgresql_username>
+POSTGRESQL_PASSWORD=<postgresql_password>
+POSTGRESQL_DATABASE=challenge
+POSTGRESQL_POSTGRES_PASSWORD=<user_postgres_password>
+# Minio Configuration
+MINIO_ROOT_USER=<minio_root_user>
+MINIO_ROOT_PASSWORD=<minio_root_password>
+MINIO_ENDPOINT=http://host.docker.internal
+MINIO_PORT_API=9000
+MINIO_SECURE=false
+MINIO_BUCKET_NAME=document-bucket
+MINIO_FILE_SIZE=5242880
+```
+2. **Start the stack de containers using `docker-compose up --build`**
+
 ---
 
 **⚠️ Important Note About the Challenge Completion ⚠️**
