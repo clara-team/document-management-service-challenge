@@ -1,0 +1,25 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: none # Prevents Hibernate from managing the schema
+    show-sql: true
+
+servlet:
+  multipart:
+    max-file-size: 500MB
+    max-request-size: 500MB
+
+server:
+  tomcat:
+    max-swallow-size: 50MB
+
+minio:
+  endpoint: http://localhost:9000
+  access-key:   minioadmin
+  secret-key:   minioadmin
+  bucket-name: document-bucket

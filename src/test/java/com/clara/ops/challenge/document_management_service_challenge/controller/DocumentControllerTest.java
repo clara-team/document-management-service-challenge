@@ -6,7 +6,7 @@ import static org.mockito.Mockito.*;
 import com.clara.ops.challenge.document_management_service_challenge.domain.dto.DownloadUrlDto;
 import com.clara.ops.challenge.document_management_service_challenge.exceptions.DataNotFound;
 import com.clara.ops.challenge.document_management_service_challenge.service.DocumentService;
-import io.minio.errors.MinioException;
+import io.minio.errors.*;
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -94,7 +94,17 @@ public class DocumentControllerTest {
   }
 
   @Test
-  void testCreateDocument_Success() {
+  void testCreateDocument_Success()
+      throws ServerException,
+          InsufficientDataException,
+          ErrorResponseException,
+          IOException,
+          NoSuchAlgorithmException,
+          InvalidKeyException,
+          InvalidResponseException,
+          XmlParserException,
+          InterruptedException,
+          InternalException {
     // Given
     var file =
         new MockMultipartFile(
@@ -112,7 +122,17 @@ public class DocumentControllerTest {
   }
 
   @Test
-  void testCreateDocument_FileTooLarge() {
+  void testCreateDocument_FileTooLarge()
+      throws ServerException,
+          InsufficientDataException,
+          ErrorResponseException,
+          IOException,
+          NoSuchAlgorithmException,
+          InvalidKeyException,
+          InvalidResponseException,
+          XmlParserException,
+          InterruptedException,
+          InternalException {
     // Given
     var file =
         new MockMultipartFile(

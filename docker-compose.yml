@@ -14,19 +14,21 @@ services:
     environment:
       - POSTGRESQL_USERNAME=${PG_USER}
       - POSTGRESQL_PASSWORD=${PG_PASSWORD}
-      - POSTGRESQL_DATABASE=challenge
+      - POSTGRESQL_DATABASE=${PG_DATABASE}
       - POSTGRESQL_POSTGRES_PASSWORD=${PG_PASSWORD}  # Password of user "postgres"
 
   minio:
     image: minio/minio:latest
     container_name: minio
     restart: always
+    networks:
+      - batch_network
     ports:
       - "9000:9000"  # API S3
       - "9001:9001"  # MinIO Web Console
     environment:
-      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
-      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+      MINIO_ROOT_USER: minio
+      MINIO_ROOT_PASSWORD: minio123456
     command: server --console-address ":9001" /data
     volumes:
       - challenge_minio_data:/data
@@ -35,12 +37,21 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    networks:
+      - batch_network
     environment:
       - JAVA_OPTS=-Xmx50m -Xms50m
-    deploy:
-      resources:
-        limits:
-          memory: 50M
+      - PG_HOST=postgresql_container
+      - PG_PORT=5432
+      - PG_DATABASE=${PG_DATABASE}
+      - PG_USER=${PG_USER}
+      - PG_PASSWORD=${PG_PASSWORD}
+      - MINIO_ENDPOINT=http://minio:9000
+      - MINIO_ACCESS_KEY=${MINIO_ACCESS_KEY}
+      - MINIO_SECRET_KEY=${MINIO_SECRET_KEY}
+      - MINIO_BUCKET_NAME=document-bucket  # Change to your Minio bucket name
 
 volumes:
   challenge_postgresql_data:

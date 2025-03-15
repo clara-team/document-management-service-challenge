@@ -10,20 +10,17 @@ import com.clara.ops.challenge.document_management_service_challenge.repository.
 import com.clara.ops.challenge.document_management_service_challenge.repository.specs.DocumentSpecifications;
 import io.minio.GetPresignedObjectUrlArgs;
 import io.minio.MinioClient;
-import io.minio.UploadObjectArgs;
+import io.minio.PutObjectArgs;
 import io.minio.errors.*;
 import io.minio.http.Method;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionException;
-import java.util.concurrent.Executors;
+import java.util.concurrent.Semaphore;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -41,7 +38,7 @@ public class DocumentService {
   private final DocumentRepository documentRepository;
   private final UserRepository userRepository;
   private final MinioClient minioClient;
-  private final int NUM_OF_THREADS = 10;
+  private final Semaphore semaphore = new Semaphore(10);
 
   @Value("${minio.bucket-name:document-bucket}")
   private String bucketName;
@@ -119,29 +116,33 @@ public class DocumentService {
    * @param file
    * @param metadata
    */
-  public void uploadFile(MultipartFile file, Map<String, String> metadata) {
+  public void uploadFile(MultipartFile file, Map<String, String> metadata)
+      throws InterruptedException,
+          ServerException,
+          InsufficientDataException,
+          ErrorResponseException,
+          IOException,
+          NoSuchAlgorithmException,
+          InvalidKeyException,
+          InvalidResponseException,
+          XmlParserException,
+          InternalException {
     log.info("Uploading file with metadata: {}", metadata);
 
-    var executor = Executors.newFixedThreadPool(NUM_OF_THREADS);
+    log.info("Thread {} attempting to acquire a permit", Thread.currentThread().getId());
 
-    CompletableFuture.runAsync(
-        () -> {
-          try {
-            processUploadedFile(file, metadata);
-          } catch (DataNotFound
-              | IOException
-              | ServerException
-              | InsufficientDataException
-              | ErrorResponseException
-              | NoSuchAlgorithmException
-              | InvalidKeyException
-              | InvalidResponseException
-              | XmlParserException
-              | InternalException e) {
-            throw new CompletionException(e);
-          }
-        },
-        executor);
+    semaphore.acquire();
+
+    try {
+      log.info("Thread {} acquired a permit", Thread.currentThread().getId());
+      processUploadedFile(file, metadata);
+    } catch (Exception e) {
+      log.error("Error uploading file: {}", e.getMessage(), e);
+      throw e;
+    } finally {
+      log.info("Thread {} releasing the permit", Thread.currentThread().getId());
+      semaphore.release();
+    }
   }
 
   /**
@@ -221,7 +222,7 @@ public class DocumentService {
   }
 
   /**
-   * U
+   * Upload file to Minio
    *
    * @param file
    * @param userPath
@@ -238,27 +239,26 @@ public class DocumentService {
           XmlParserException,
           InternalException {
 
-    String originalFilename = file.getOriginalFilename();
+    var originalFilename = file.getOriginalFilename();
     if (originalFilename == null) {
       throw new IllegalArgumentException("File name cannot be null");
     }
 
-    var tempFile = Files.createTempFile("upload-", originalFilename);
-    file.transferTo(tempFile.toFile());
+    var objectKey = String.format("%s/%s", userPath, originalFilename);
 
-    if (!Files.exists(tempFile)) {
-      throw new RuntimeException("Temporary file was not created successfully.");
+    try (var inputStream = file.getInputStream()) {
+      minioClient.putObject(
+          PutObjectArgs.builder().bucket(bucketName).object(objectKey).stream(
+                  inputStream, file.getSize(), -1)
+              .contentType(file.getContentType())
+              .build());
+
+      log.info("File uploaded successfully: {}", objectKey);
+      return objectKey;
+    } catch (Exception e) {
+      log.error("Error uploading file: {}", e.getMessage(), e);
+      throw e;
     }
-
-    String objectKey = String.format("%s/%s", userPath, originalFilename);
-    minioClient.uploadObject(
-        UploadObjectArgs.builder()
-            .bucket(bucketName)
-            .object(objectKey)
-            .filename(tempFile.toString())
-            .build());
-    log.info("File uploaded successfully: {}", objectKey);
-    return objectKey;
   }
 
   /**

@@ -4,6 +4,22 @@
 
 In this challenge, you will build a backend API service to manage **large PDF documents**. The service must allow users to upload, search, and download PDF documents while efficiently handling resources, given a **memory limitation of 50MB assigned to the document management service container**. This challenge is designed for a mid-senior engineer to demonstrate advanced skills in **Spring Boot, Java, REST API development, testing, containerization, and cloud storage integration**.
 
+## Technologies Used
+
+- Java 17
+- Spring Boot
+- PostgreSQL
+- Minio
+- Docker
+- Swagger
+- Postman
+
+## Minio Configuration
+
+Minio is used as a cloud storage solution for the document management service.  You can configure the Minio endpoint, access key, secret key, and bucket name according to your Minio instance.
+
+Please access minio console and generate a new access key and secret key for the registred user
+
 ## Defining env variables
 
 Create a .env file in the root directory of the project and add the following variables:
@@ -31,3 +47,7 @@ docker-compose -f docker/docker-compose.yml --env-file .env up --build
 ## Swagger
 
 The Swagger documentation is available at http://localhost:8080/swagger-ui/index.html.
+
+## Postman
+
+Postman collections are available in the `docs` folder.

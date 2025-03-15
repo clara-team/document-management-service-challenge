@@ -4,11 +4,13 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+import com.clara.ops.challenge.document_management_service_challenge.domain.dto.DownloadUrlDto;
 import com.clara.ops.challenge.document_management_service_challenge.domain.entity.Document;
 import com.clara.ops.challenge.document_management_service_challenge.domain.entity.User;
 import com.clara.ops.challenge.document_management_service_challenge.repository.DocumentRepository;
 import com.clara.ops.challenge.document_management_service_challenge.repository.UserRepository;
 import io.minio.MinioClient;
+import java.io.ByteArrayInputStream;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -74,15 +76,17 @@ class DocumentServiceTest {
   void testGenerateDownloadUrl() throws Exception {
     // Setup
     var document = Document.builder().id(1L).path("test/path").build();
+    var downloadUrl = "http://example.com/download";
+    var downloadObj = new DownloadUrlDto(downloadUrl);
 
     when(documentRepository.findById(1L)).thenReturn(Optional.of(document));
-    when(minioClient.getPresignedObjectUrl(any())).thenReturn("http://example.com/download");
+    when(minioClient.getPresignedObjectUrl(any())).thenReturn(downloadUrl);
 
     // Execute
-    var downloadUrl = documentService.generateDownloadUrl(1L);
+    var download = documentService.generateDownloadUrl(1L);
 
     // Verify
-    assertEquals("http://example.com/download", downloadUrl);
+    assertEquals(downloadUrl, download.url());
   }
 
   @Test
@@ -92,6 +96,7 @@ class DocumentServiceTest {
     when(file.getOriginalFilename()).thenReturn("test-file.pdf");
     when(file.getContentType()).thenReturn("application/pdf");
     when(file.getSize()).thenReturn(1024L);
+    when(file.getInputStream()).thenReturn(new ByteArrayInputStream(new byte[1024]));
 
     var user = User.builder().id(1L).username("bobsmith").build();
 

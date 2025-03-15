@@ -102,7 +102,17 @@ public class DocumentController {
         @ApiResponse(responseCode = "500", description = "Internal Server Error")
       })
   public ResponseEntity createDocument(
-      @RequestParam("file") MultipartFile file, @RequestParam Map<String, String> metadata) {
+      @RequestParam("file") MultipartFile file, @RequestParam Map<String, String> metadata)
+      throws ServerException,
+          InsufficientDataException,
+          ErrorResponseException,
+          IOException,
+          NoSuchAlgorithmException,
+          InvalidKeyException,
+          InvalidResponseException,
+          XmlParserException,
+          InternalException,
+          InterruptedException {
 
     if (file.getSize() > 500 * 1024 * 1024) { // 500 MB limit
       return ResponseEntity.badRequest().body("File size exceeds the maximum limit of 500MB.");
