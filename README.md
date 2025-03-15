@@ -41,7 +41,8 @@ MINIO_BUCKET_NAME=[minio_bucket_name]
 To test the application, use the following command:
 
 ```
-docker-compose -f docker/docker-compose.yml --env-file .env up --build
+docker-compose --env-file .env up --build
+
 ```
 
 ## Swagger
