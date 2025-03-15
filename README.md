@@ -180,6 +180,7 @@ MINIO_SECURE=false
 MINIO_BUCKET_NAME=document-bucket
 MINIO_FILE_SIZE=5242880
 ```
+
 2. **Start the stack de containers using `docker-compose up --build`**
 
 ---

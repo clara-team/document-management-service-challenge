@@ -62,8 +62,11 @@ public class DocumentManagementServiceImp implements IDocumentManagementService 
     Page<Document> pageDocumentEntity =
         validateIsAllDocuments(documentSearchDTO)
             ? documentRepository.findAll(pageable)
-            : documentRepository.findAllByUserNameAndName(
-                documentSearchDTO.getUser(), documentSearchDTO.getName(), pageable);
+            : documentRepository.findAllByUserNameAndNameAndTagName(
+                documentSearchDTO.getUser(),
+                documentSearchDTO.getName(),
+                documentSearchDTO.getTags(),
+                pageable);
     List<DocumentDTO> listDocumentDTO =
         pageDocumentEntity.getContent().stream()
             .map(document -> documentEntityMapper.mapToDocumentDTO(document))
@@ -129,6 +132,6 @@ public class DocumentManagementServiceImp implements IDocumentManagementService 
   private boolean validateIsAllDocuments(DocumentSearchDTO documentSearchDTO) {
     return Objects.isNull(documentSearchDTO.getUser())
         && Objects.isNull(documentSearchDTO.getName())
-        && Objects.isNull(documentSearchDTO.getTag());
+        && Objects.isNull(documentSearchDTO.getTags());
   }
 }

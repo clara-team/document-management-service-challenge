@@ -34,7 +34,7 @@ public interface IDocumentManagementMapper {
 
   @Mapping(target = "user", source = "filter.user")
   @Mapping(target = "name", source = "filter.name")
-  @Mapping(target = "tag", source = "filter.tag")
+  @Mapping(target = "tags", source = "filter.tags")
   @Mapping(target = "page", source = "page")
   @Mapping(target = "size", source = "size")
   @Mapping(target = "sort", source = "sort")

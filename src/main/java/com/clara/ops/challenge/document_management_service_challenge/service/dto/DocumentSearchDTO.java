@@ -1,5 +1,6 @@
 package com.clara.ops.challenge.document_management_service_challenge.service.dto;
 
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,5 +16,5 @@ public class DocumentSearchDTO {
   private String sort;
   private String user;
   private String name;
-  private String tag;
+  private List<String> tags;
 }
