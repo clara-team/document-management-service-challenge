@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
@@ -95,11 +96,12 @@ public class DocumentManagementServiceImp implements IDocumentManagementService 
   }
 
   private void validateFile(MultipartFile file) {
-    if (!file.getContentType().equalsIgnoreCase("application/pdf"))
-      throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "file type not allowed");
-    if (file.getSize() > 500L * 1024 * 1024)
+    if (file.isEmpty() || !Objects.equals(file.getContentType(), MediaType.APPLICATION_PDF_VALUE))
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "File type not allowed");
+    if (file.getSize() > 500 * 1024 * 1024)
       throw new ResponseStatusException(
-          HttpStatus.INTERNAL_SERVER_ERROR, "File size exceeds the 500mb limit");
+          HttpStatus.PAYLOAD_TOO_LARGE,
+          "File size exceeds the maximum limit allowed size of 500Mb");
   }
 
   private User validateUser(String name) {

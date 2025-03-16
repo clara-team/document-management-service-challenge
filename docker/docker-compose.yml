@@ -44,7 +44,7 @@ services:
       - minio
       - postgresql
     environment:
-      - JAVA_OPTS=-Xmx50m -Xms50m
+      - JAVA_OPTS=-Xmx50m -Xms50m -XX:MaxRAM=50m -XX:MaxRAMPercentage=95.0
       - SPRING_DATASOURCE_URL=${POSTGRESQL_HOST}${POSTGRESQL_DATABASE}
       - SPRING_DATASOURCE_USERNAME=${POSTGRESQL_USERNAME}
       - SPRING_DATASOURCE_PASSWORD=${POSTGRESQL_PASSWORD}

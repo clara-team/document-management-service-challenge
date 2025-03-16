@@ -28,7 +28,7 @@
 		<minio.version>8.4.3</minio.version>
 
 		<!-- SpringDoc version -->
-		<springdoc.version>2.0.2</springdoc.version>
+		<springdoc.version>2.8.5</springdoc.version>
 		<!-- OpeApiTools version -->
 		<openapitools.version>0.2.6</openapitools.version>
 		<!-- Mapstruct version -->

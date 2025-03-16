@@ -4,6 +4,7 @@ import com.clara.ops.challenge.document_management_service_challenge.controller.
 import com.clara.ops.challenge.document_management_service_challenge.controller.dto.response.Document;
 import com.clara.ops.challenge.document_management_service_challenge.controller.dto.response.DocumentDownloadUrl;
 import com.clara.ops.challenge.document_management_service_challenge.controller.dto.response.PaginatedDocumentSearch;
+import com.clara.ops.challenge.document_management_service_challenge.exception.ErrorExceptionResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -32,32 +33,50 @@ public interface IDocumentManagementController {
             description = "OK",
             content =
                 @Content(
-                    mediaType = "*/*",
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = DocumentDownloadUrl.class))),
         @ApiResponse(
             responseCode = "400",
             description = "Bad Request",
-            content = @Content(mediaType = "*/*", schema = @Schema(implementation = Object.class))),
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ErrorExceptionResponse.class))),
         @ApiResponse(
             responseCode = "401",
             description = "Unauthorized",
-            content = @Content(mediaType = "*/*", schema = @Schema(implementation = Object.class))),
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ErrorExceptionResponse.class))),
         @ApiResponse(
             responseCode = "403",
             description = "Forbidden",
-            content = @Content(mediaType = "*/*", schema = @Schema(implementation = Object.class))),
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ErrorExceptionResponse.class))),
         @ApiResponse(
             responseCode = "404",
             description = "Not Found",
-            content = @Content(mediaType = "*/*", schema = @Schema(implementation = Object.class))),
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ErrorExceptionResponse.class))),
         @ApiResponse(
             responseCode = "409",
             description = "Conflict",
-            content = @Content(mediaType = "*/*", schema = @Schema(implementation = Object.class))),
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ErrorExceptionResponse.class))),
         @ApiResponse(
             responseCode = "500",
             description = "Internal Server Error",
-            content = @Content(mediaType = "*/*", schema = @Schema(implementation = Object.class)))
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ErrorExceptionResponse.class)))
       })
   @RequestMapping(
       value = "/document-management/download/{documentId}",
@@ -79,32 +98,50 @@ public interface IDocumentManagementController {
             description = "The documents were found successfully.",
             content =
                 @Content(
-                    mediaType = "application/json",
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
                     schema = @Schema(implementation = PaginatedDocumentSearch.class))),
         @ApiResponse(
             responseCode = "400",
             description = "Bad Request",
-            content = @Content(mediaType = "*/*", schema = @Schema(implementation = Object.class))),
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ErrorExceptionResponse.class))),
         @ApiResponse(
             responseCode = "401",
             description = "Unauthorized",
-            content = @Content(mediaType = "*/*", schema = @Schema(implementation = Object.class))),
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ErrorExceptionResponse.class))),
         @ApiResponse(
             responseCode = "403",
             description = "Forbidden",
-            content = @Content(mediaType = "*/*", schema = @Schema(implementation = Object.class))),
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ErrorExceptionResponse.class))),
         @ApiResponse(
             responseCode = "404",
             description = "Not Found",
-            content = @Content(mediaType = "*/*", schema = @Schema(implementation = Object.class))),
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ErrorExceptionResponse.class))),
         @ApiResponse(
             responseCode = "409",
             description = "Conflict",
-            content = @Content(mediaType = "*/*", schema = @Schema(implementation = Object.class))),
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ErrorExceptionResponse.class))),
         @ApiResponse(
             responseCode = "500",
             description = "Internal Server Error",
-            content = @Content(mediaType = "*/*", schema = @Schema(implementation = Object.class)))
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ErrorExceptionResponse.class)))
       })
   @RequestMapping(
       value = "/document-management/search",
@@ -145,35 +182,67 @@ public interface IDocumentManagementController {
       tags = {"Document Management"})
   @ApiResponses(
       value = {
-        @ApiResponse(responseCode = "201", description = "The document was uploaded successfully."),
+        @ApiResponse(
+            responseCode = "201",
+            description = "The document was uploaded successfully.",
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = Document.class))),
         @ApiResponse(
             responseCode = "400",
             description = "Bad Request",
-            content = @Content(mediaType = "*/*", schema = @Schema(implementation = Object.class))),
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ErrorExceptionResponse.class))),
         @ApiResponse(
             responseCode = "401",
             description = "Unauthorized",
-            content = @Content(mediaType = "*/*", schema = @Schema(implementation = Object.class))),
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ErrorExceptionResponse.class))),
         @ApiResponse(
             responseCode = "403",
             description = "Forbidden",
-            content = @Content(mediaType = "*/*", schema = @Schema(implementation = Object.class))),
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ErrorExceptionResponse.class))),
         @ApiResponse(
             responseCode = "404",
             description = "Not Found",
-            content = @Content(mediaType = "*/*", schema = @Schema(implementation = Object.class))),
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ErrorExceptionResponse.class))),
         @ApiResponse(
             responseCode = "409",
             description = "Conflict",
-            content = @Content(mediaType = "*/*", schema = @Schema(implementation = Object.class))),
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ErrorExceptionResponse.class))),
+        @ApiResponse(
+            responseCode = "413",
+            description = "Payload Too Large",
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ErrorExceptionResponse.class))),
         @ApiResponse(
             responseCode = "500",
             description = "Internal Server Error",
-            content = @Content(mediaType = "*/*", schema = @Schema(implementation = Object.class)))
+            content =
+                @Content(
+                    mediaType = MediaType.APPLICATION_JSON_VALUE,
+                    schema = @Schema(implementation = ErrorExceptionResponse.class)))
       })
   @RequestMapping(
       value = "/document-management/upload",
       consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+      produces = MediaType.APPLICATION_JSON_VALUE,
       method = RequestMethod.POST)
   ResponseEntity<Document> uploadDocument(
       @Parameter(
