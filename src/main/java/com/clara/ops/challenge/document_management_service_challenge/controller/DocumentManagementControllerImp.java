@@ -39,11 +39,12 @@ public class DocumentManagementControllerImp implements IDocumentManagementContr
 
   @Override
   public ResponseEntity<Document> uploadDocument(
-      String user, String name, List<String> tags, MultipartFile file) {
+      String user, String name, List<String> tags, String typeUpload, MultipartFile file) {
     Document document =
         documentManagementMapper.mapToDocument(
-            documentManagementService.uploadDocument(
-                documentManagementMapper.mapToUploadDocumentDTO(user, name, tags, file)));
+            documentManagementService.validateStrategyAndUploadFile(
+                documentManagementMapper.mapToUploadDocumentDTO(
+                    user, name, tags, typeUpload, file)));
     return new ResponseEntity<>(document, HttpStatus.CREATED);
   }
 }

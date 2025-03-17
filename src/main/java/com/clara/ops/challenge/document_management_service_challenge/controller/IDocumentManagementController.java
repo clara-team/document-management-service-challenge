@@ -268,6 +268,17 @@ public interface IDocumentManagementController {
           List<String> tags,
       @Parameter(
               in = ParameterIn.DEFAULT,
+              description =
+                  "File upload implementation type. File partition, semaphore, Dick upload",
+              required = true,
+              schema =
+                  @Schema(
+                      allowableValues = {"FILE_PARTITION", "SEMAPHORE", "DISK_UPLOAD"},
+                      defaultValue = "FILE_PARTITION"))
+          @RequestParam(value = "Type Upload", required = true, defaultValue = "FILE_PARTITION")
+          String typeUpload,
+      @Parameter(
+              in = ParameterIn.DEFAULT,
               description = "The multipartfile file with binary data.",
               required = true,
               schema = @Schema())

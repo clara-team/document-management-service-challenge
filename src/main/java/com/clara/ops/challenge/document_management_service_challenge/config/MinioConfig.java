@@ -16,7 +16,8 @@ public class MinioConfig {
   private String rootUser;
   private String rootPassword;
   private String bucketName;
-  private long fileSize;
+  private Long partSize;
+  private Integer permitAvailable;
 
   @Bean
   public MinioClient minioClient() {

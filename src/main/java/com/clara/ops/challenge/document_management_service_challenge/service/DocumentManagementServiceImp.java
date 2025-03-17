@@ -1,5 +1,6 @@
 package com.clara.ops.challenge.document_management_service_challenge.service;
 
+import com.clara.ops.challenge.document_management_service_challenge.config.MinioConfig;
 import com.clara.ops.challenge.document_management_service_challenge.entity.Document;
 import com.clara.ops.challenge.document_management_service_challenge.entity.Tag;
 import com.clara.ops.challenge.document_management_service_challenge.entity.User;
@@ -13,7 +14,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -25,21 +28,36 @@ import org.springframework.web.server.ResponseStatusException;
 @Transactional
 public class DocumentManagementServiceImp implements IDocumentManagementService {
 
-  @Autowired private IMinioService minioService;
   @Autowired private UserRepository userRepository;
   @Autowired private DocumentRepository documentRepository;
   @Autowired private TagRepository tagRepository;
   @Autowired private IDocumentEntityMapper documentEntityMapper;
+  @Autowired private IMinioService minioService;
+  @Autowired private MinioConfig minioConfig;
+
+  @Autowired
+  @Qualifier("FilePartitionUploadStrategy") private IUploadStrategy filePartitionUploadStrategy;
+
+  @Autowired
+  @Qualifier("DiskUploadStrategy") private IUploadStrategy diskUploadStrategy;
+
+  @Autowired
+  @Qualifier("SemaphoreUploadStrategy") private IUploadStrategy semaphoreUploadStrategy;
 
   @Override
-  public DocumentDTO uploadDocument(UploadDocumentDTO uploadDocumentDTO) {
-    validateFile(uploadDocumentDTO.getFile());
-    User user = validateUser(uploadDocumentDTO.getUser());
-    FileResponseDTO fileResponseDTO =
-        minioService.putObject(
-            uploadDocumentDTO.getFile(), user.getName(), uploadDocumentDTO.getName());
-    Document document = validateDocument(user, fileResponseDTO);
-    List<Tag> listTags = validateListTags(document, uploadDocumentDTO.getTags());
+  public DocumentDTO validateStrategyAndUploadFile(UploadDocumentDTO uploadDocumentDTO) {
+    validateConstrainsFile(uploadDocumentDTO.getFile());
+    UploadType uploadType = uploadDocumentDTO.getTypeUpload();
+    FileInputDTO fileInputDTO = getFileInputDTO(uploadDocumentDTO);
+    if (UploadType.FILE_PARTITION.equals(uploadType))
+      filePartitionUploadStrategy.processUpload(fileInputDTO, uploadDocumentDTO.getFile());
+    else if (UploadType.DISK_UPLOAD.equals(uploadType))
+      diskUploadStrategy.processUpload(fileInputDTO, uploadDocumentDTO.getFile());
+    else if (UploadType.SEMAPHORE.equals(uploadType))
+      semaphoreUploadStrategy.processUpload(fileInputDTO, uploadDocumentDTO.getFile());
+    User user = validateAndCreateUser(uploadDocumentDTO.getUser());
+    Document document = validateAndCreateDocument(user, fileInputDTO);
+    List<Tag> listTags = deleteAndCreateNewListTags(document, uploadDocumentDTO.getTags());
     return DocumentDTO.builder()
         .id(document.getId().toString())
         .type(document.getFileType())
@@ -50,6 +68,19 @@ public class DocumentManagementServiceImp implements IDocumentManagementService 
         .createdAt(document.getCreatedAt().toString())
         .tags(listTags.stream().map(Tag::getName).collect(Collectors.toList()))
         .build();
+  }
+
+  @NotNull private static FileInputDTO getFileInputDTO(UploadDocumentDTO uploadDocumentDTO) {
+    String fileName = uploadDocumentDTO.getFile().getOriginalFilename();
+    String fileType = uploadDocumentDTO.getFile().getContentType();
+    String objectName = uploadDocumentDTO.getName() + fileName.substring(fileName.lastIndexOf("."));
+    String pathFile = uploadDocumentDTO.getUser() + "/" + objectName;
+    FileInputDTO fileInputDTO = new FileInputDTO();
+    fileInputDTO.setNameDocument(fileName);
+    fileInputDTO.setFileType(fileType);
+    fileInputDTO.setPathFile(pathFile);
+    fileInputDTO.setFileSize(uploadDocumentDTO.getFile().getSize());
+    return fileInputDTO;
   }
 
   @Override
@@ -91,11 +122,11 @@ public class DocumentManagementServiceImp implements IDocumentManagementService 
     if (Objects.isNull(document))
       throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Document not found");
     return DocumentDownloadUrlDTO.builder()
-        .url(minioService.getObjectUrl(document.getMinioPath()))
+        .url(minioService.getObjectUrl(minioConfig.getBucketName(), document.getMinioPath()))
         .build();
   }
 
-  private void validateFile(MultipartFile file) {
+  private void validateConstrainsFile(MultipartFile file) {
     if (file.isEmpty() || !Objects.equals(file.getContentType(), MediaType.APPLICATION_PDF_VALUE))
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "File type not allowed");
     if (file.getSize() > 500 * 1024 * 1024)
@@ -104,27 +135,27 @@ public class DocumentManagementServiceImp implements IDocumentManagementService 
           "File size exceeds the maximum limit allowed size of 500Mb");
   }
 
-  private User validateUser(String name) {
+  private User validateAndCreateUser(String name) {
     User user = userRepository.findOneByName(name).orElse(null);
     if (Objects.isNull(user)) user = new User();
     user.setName(name);
     return userRepository.save(user);
   }
 
-  private Document validateDocument(User user, FileResponseDTO fileResponseDTO) {
+  private Document validateAndCreateDocument(User user, FileInputDTO fileInputDTO) {
     Document document =
-        documentRepository.findOneByUserAndName(user, fileResponseDTO.getFilename()).orElse(null);
+        documentRepository.findOneByUserAndName(user, fileInputDTO.getNameDocument()).orElse(null);
     if (Objects.isNull(document)) document = new Document();
     document.setUser(user);
-    document.setName(fileResponseDTO.getFilename());
-    document.setFileType(fileResponseDTO.getContentType());
-    document.setFileSize(fileResponseDTO.getFileSize());
-    document.setMinioPath(fileResponseDTO.getPathFile());
+    document.setName(fileInputDTO.getNameDocument());
+    document.setFileType(fileInputDTO.getFileType());
+    document.setFileSize(fileInputDTO.getFileSize());
+    document.setMinioPath(fileInputDTO.getPathFile());
     document.setCreatedAt(LocalDateTime.now());
     return documentRepository.save(document);
   }
 
-  private List<Tag> validateListTags(Document document, List<String> tags) {
+  private List<Tag> deleteAndCreateNewListTags(Document document, List<String> tags) {
     tagRepository.deleteAllByDocument(document);
     List<Tag> newListTags =
         tags.stream().map((tag) -> new Tag(null, tag, document)).collect(Collectors.toList());

@@ -1,11 +1,16 @@
 package com.clara.ops.challenge.document_management_service_challenge.service;
 
-import com.clara.ops.challenge.document_management_service_challenge.service.dto.FileResponseDTO;
-import org.springframework.web.multipart.MultipartFile;
+import com.clara.ops.challenge.document_management_service_challenge.service.dto.FileInputDTO;
+import java.io.InputStream;
 
 public interface IMinioService {
 
-  FileResponseDTO putObject(MultipartFile multipartFile, String User, String name);
+  Boolean bucketExists(String bucketName);
 
-  String getObjectUrl(String objectName);
+  void bucketMake(String bucketName);
+
+  String getObjectUrl(String bucketName, String objectName);
+
+  void putObject(
+      String bucketName, FileInputDTO fileInputDTO, InputStream inputStream, Long partSize);
 }

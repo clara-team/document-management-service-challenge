@@ -52,9 +52,10 @@ services:
       - MINIO_PORT_API=${MINIO_PORT_API}
       - MINIO_SECURE=${MINIO_SECURE}
       - MINIO_BUCKET_NAME=${MINIO_BUCKET_NAME}
-      - MINIO_FILE_SIZE=${MINIO_FILE_SIZE}
+      - MINIO_PART_SIZE=${MINIO_PART_SIZE}
       - MINIO_ROOT_USER=${MINIO_ROOT_USER}
       - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
+      - MINIO_PERMIT_AVAILABLE=${MINIO_PERMIT_AVAILABLE}
     volumes:
       - challenge_document-management-service_data:/data
 

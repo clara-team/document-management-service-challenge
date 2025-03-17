@@ -20,8 +20,9 @@ public interface IDocumentManagementMapper {
   @Mapping(target = "name", source = "name")
   @Mapping(target = "tags", source = "tags")
   @Mapping(target = "file", source = "file")
+  @Mapping(target = "typeUpload", source = "typeUpload")
   UploadDocumentDTO mapToUploadDocumentDTO(
-      String user, String name, List<String> tags, MultipartFile file);
+      String user, String name, List<String> tags, String typeUpload, MultipartFile file);
 
   @Mapping(target = "id", source = "id")
   @Mapping(target = "user", source = "user")

@@ -7,9 +7,9 @@ import lombok.*;
 @AllArgsConstructor
 @EqualsAndHashCode
 @Builder
-public class FileResponseDTO {
-  private String filename;
-  private String contentType;
-  private Long fileSize;
+public class FileInputDTO {
+  private String nameDocument;
   private String pathFile;
+  private String fileType;
+  private Long fileSize;
 }
