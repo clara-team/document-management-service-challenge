@@ -168,12 +168,12 @@ public interface IDocumentManagementController {
               in = ParameterIn.QUERY,
               description =
                   "Sorting criteria for created_at field: (asc|desc). Default sort order is"
-                      + " ascending.",
+                      + " descending.",
               schema =
                   @Schema(
                       allowableValues = {"asc", "desc"},
-                      defaultValue = "asc"))
-          @RequestParam(value = "sort", required = false, defaultValue = "asc")
+                      defaultValue = "desc"))
+          @RequestParam(value = "sort", required = false, defaultValue = "desc")
           String sort);
 
   @Operation(
