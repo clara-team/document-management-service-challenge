@@ -76,7 +76,7 @@ public class DocumentManagementServiceImp implements IDocumentManagementService 
     String objectName = uploadDocumentDTO.getName() + fileName.substring(fileName.lastIndexOf("."));
     String pathFile = uploadDocumentDTO.getUser() + "/" + objectName;
     FileInputDTO fileInputDTO = new FileInputDTO();
-    fileInputDTO.setNameDocument(fileName);
+    fileInputDTO.setNameDocument(objectName);
     fileInputDTO.setFileType(fileType);
     fileInputDTO.setPathFile(pathFile);
     fileInputDTO.setFileSize(uploadDocumentDTO.getFile().getSize());
