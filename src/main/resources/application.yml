@@ -18,6 +18,6 @@ spring:
 logging:
   level:
     root: INFO
-    com.zaxxer.hikari: DEBUG      # para ver detalles de HikariCP
+    com.zaxxer.hikari: DEBUG      # para ver detalles de Hikari
     org.hibernate.SQL: DEBUG      # para ver los SQL que genera Hibernate
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE  # para ver valores que se bindean
