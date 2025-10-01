@@ -1,0 +1,23 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${POSTGRES_DB:challenge}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      auto-commit: true
+      minimum-idle: 1
+      maximum-pool-size: 5
+  application:
+    name: document-management-service
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true # debug level
+
+logging:
+  level:
+    root: INFO
+    com.zaxxer.hikari: DEBUG      # para ver detalles de HikariCP
+    org.hibernate.SQL: DEBUG      # para ver los SQL que genera Hibernate
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE  # para ver valores que se bindean
