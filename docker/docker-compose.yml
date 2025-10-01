@@ -1,19 +1,20 @@
 services:
   postgresql:
     container_name: postgresql_container
-    image: bitnami/postgresql:15.4.0
+    ## The tag "bitnami/postgresql:15.4.0" is invalid,
+    ## switched to a valid image instead (postgres:latest).
+    image: postgres:latest
     ports:
       - "5432:5432"
     networks:
       - batch_network
     volumes:
-      - challenge_postgresql_data:/bitnami/postgresql
+      - challenge_postgresql_data:/var/lib/postgresql/data
       - ./init-scripts:/docker-entrypoint-initdb.d
     environment:
-      - POSTGRESQL_USERNAME={CHANGE_ME}
-      - POSTGRESQL_PASSWORD={CHANGE_ME}
-      - POSTGRESQL_DATABASE=challenge
-      - POSTGRESQL_POSTGRES_PASSWORD={CHANGE_ME} # Password of user "postgres"
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
   minio:
     image: minio/minio:latest
     container_name: minio
@@ -22,20 +23,36 @@ services:
       - "9000:9000"  # API S3
       - "9001:9001"  # MinIO Web Console
     environment:
-      MINIO_ROOT_USER: {CHANGE_ME}
-      MINIO_ROOT_PASSWORD: {CHANGE_ME}
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
     command: server --console-address ":9001" /data
     volumes:
       - challenge_minio_data:/data
-  # Include all the necessary settings to include a document management service in the stack
-  # Remember to configure this service to limit the memory to 50MB
-  # document-management-service:
-  #    environment:
-  #      - JAVA_OPTS=-Xmx50m -Xms50m
-  #    deploy:
-  #      resources:
-  #        limits:
-  #          memory: 50M
+#   Include all the necessary settings to include a document management service in the stack
+#   Remember to configure this service to limit the memory to 50MB
+  document-management-service:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: doc-service
+    restart: on-failure
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${POSTGRESQL_DB}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      MINIO_ENDPOINT: http://minio:9000
+      MINIO_ACCESS_KEY: ${MINIO_ROOT_USER}
+      MINIO_SECRET_KEY: ${MINIO_ROOT_PASSWORD}
+      JAVA_OPTS: -Xmx50m -Xms50m
+    depends_on:
+      - postgresql
+      - minio
+    deploy:
+      resources:
+        limits:
+          memory: 50M
 
 volumes:
   challenge_postgresql_data:
