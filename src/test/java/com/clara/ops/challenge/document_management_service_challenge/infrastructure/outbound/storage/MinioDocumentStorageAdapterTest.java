@@ -13,6 +13,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,8 +31,9 @@ class MinioDocumentStorageAdapterTest {
   @BeforeEach
   void setup() {
 
-    minioProperties.setBucketName("test-bucket");
+    MockitoAnnotations.openMocks(this);
     adapter = new MinioDocumentStorageAdapter(minioClient, minioProperties);
+
     validFile =
         new MockMultipartFile("file", "test.pdf", "application/pdf", "fake-pdf-content".getBytes());
     invalidFile = new MockMultipartFile("file", "empty.pdf", "application/pdf", new byte[0]);
@@ -81,5 +83,16 @@ class MinioDocumentStorageAdapterTest {
   @DisplayName("Should throw exception for invalid file")
   void shouldThrowExceptionForInvalidFile() {
     assertThrows(StorageException.class, () -> adapter.uploadFile(invalidFile, "user123"));
+  }
+
+  @Test
+  @DisplayName("Should throw exception if bucket name is missing in properties")
+  void shouldThrowExceptionIfBucketIsMissing() {
+
+    when(minioProperties.getBucketName()).thenReturn(null);
+    MinioDocumentStorageAdapter adapter =
+        new MinioDocumentStorageAdapter(minioClient, minioProperties);
+
+    assertThrows(IllegalArgumentException.class, adapter::validateConfiguration);
   }
 }
