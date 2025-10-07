@@ -46,6 +46,7 @@ public class DocumentMapper {
     entity.setMinioPath(document.getMinioPath());
     entity.setFileSize(document.getFileSize());
     entity.setFileType(document.getFileType());
+    entity.setDocumentUrl(document.getDocumentUrl());
     entity.setChecksum(document.getChecksum());
     entity.setStatus(document.getStatus());
     entity.setCreatedAt(document.getCreatedAt());
@@ -64,6 +65,7 @@ public class DocumentMapper {
         .minioPath(entity.getMinioPath())
         .fileSize(entity.getFileSize())
         .fileType(entity.getFileType())
+        .documentUrl(entity.getDocumentUrl())
         .checksum(entity.getChecksum())
         .status(entity.getStatus())
         .createdAt(entity.getCreatedAt())
