@@ -1,6 +1,19 @@
+server:
+  tomcat:
+    threads:
+      max: 50
+      min-spare: 10
+
 spring:
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
+
+  application:
+    name: document-management-service
+
   datasource:
-    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${POSTGRES_DB:challenge}
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${POSTGRES_DB:challenge}
     username: ${POSTGRES_USER}
     password: ${POSTGRES_PASSWORD}
     driver-class-name: org.postgresql.Driver
@@ -8,16 +21,57 @@ spring:
       auto-commit: true
       minimum-idle: 1
       maximum-pool-size: 5
-  application:
-    name: document-management-service
 
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
-    show-sql: true # debug level
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+  servlet:
+    multipart:
+      max-file-size: 500MB
+      max-request-size: 500MB
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info
+  endpoint:
+    health:
+      show-details: always
+  info:
+    git:
+      mode: full
+    build:
+      enabled: true
+
+security:
+  jwt:
+    secret: ${JWT_SECRET}
+
+minio:
+  url: http://localhost:9000
+  access-key: ${MINIO_ROOT_USER:minioadmin}
+  secret-key: ${MINIO_ROOT_PASSWORD:minioadmin}
+  bucket-name: documents
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    operationsSorter: method
+    tagsSorter: alpha
+
+info:
+  app:
+    name: document-management-service
+    description: API for managing PDF documents
+    version: 0.0.1-SNAPSHOT
 
 logging:
   level:
     root: INFO
-    com.zaxxer.hikari: DEBUG      # para ver detalles de Hikari
-    org.hibernate.SQL: DEBUG      # para ver los SQL que genera Hibernate
-    org.hibernate.type.descriptor.sql.BasicBinder: TRACE  # para ver valores que se bindean
+    com.zaxxer.hikari: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
