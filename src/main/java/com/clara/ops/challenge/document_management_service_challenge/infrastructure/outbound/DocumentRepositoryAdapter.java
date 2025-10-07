@@ -16,8 +16,6 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.print.Doc;
-
 /**
  * Adapter implementation of the {@link DocumentRepositoryPort} interface for managing
  * document-related operations. It serves as a bridge between the domain layer and the persistence

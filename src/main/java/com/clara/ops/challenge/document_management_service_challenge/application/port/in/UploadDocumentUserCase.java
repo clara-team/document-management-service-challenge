@@ -5,7 +5,10 @@ import com.clara.ops.challenge.document_management_service_challenge.infrastruct
 import java.io.IOException;
 import org.springframework.web.multipart.MultipartFile;
 
+/**
+ * Interface for managing the use case of uploading a document. Provides functionality to upload a
+ * document file along with its associated metadata.
+ */
 public interface UploadDocumentUserCase {
-  UploadDocumentResponse upload(MultipartFile file, DocumentMetadata metadata, String userId)
-      throws IOException;
+  UploadDocumentResponse upload(MultipartFile file, DocumentMetadata metadata) throws IOException;
 }
