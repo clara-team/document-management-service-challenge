@@ -5,6 +5,9 @@ server:
       min-spare: 10
 
 spring:
+  config:
+    import: optional:file:.env[.properties]
+
   autoconfigure:
     exclude:
       - org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
@@ -47,14 +50,13 @@ management:
     build:
       enabled: true
 
-security:
-  jwt:
-    secret: ${JWT_SECRET}
+  security:
+    enabled: false
 
 minio:
-  url: http://localhost:9000
-  access-key: ${MINIO_ROOT_USER}
-  secret-key: ${MINIO_ROOT_PASSWORD}
+  url: ${MINIO_ENDPOINT:http://localhost:9000}
+  access-key: ${MINIO_ACCESS_KEY:admin}
+  secret-key: ${MINIO_SECRET_KEY:2DmLGeZ.}
   bucket-name: documents
 
 springdoc:

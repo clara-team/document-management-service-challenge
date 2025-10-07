@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   postgresql:
     image: postgres:15
@@ -16,19 +14,24 @@ services:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_DB=${POSTGRES_DB}
+
   minio:
     image: minio/minio:latest
     container_name: minio
     restart: always
     ports:
-      - "9000:9000"  # API S3
-      - "9001:9001"  # MinIO Web Console
+      - "9000:9000"
+      - "9001:9001"
     environment:
-      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
-      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+      environment:
+      MINIO_ENDPOINT: http://minio:9000
+      MINIO_ROOT_USER: admin
+      MINIO_ROOT_PASSWORD: 2DmLGeZ.
     command: server --console-address ":9001" /data
     volumes:
       - challenge_minio_data:/data
+    networks:
+      - batch_network
 #   Include all the necessary settings to include a document management service in the stack
 #   Remember to configure this service to limit the memory to 50MB
   document-management-service:
@@ -39,10 +42,7 @@ services:
     restart: on-failure
     ports:
       - "8080:8080"
-    env_file:
-      - local.env
     environment:
-      environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgresql:5432/${POSTGRES_DB}
       SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
       SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
