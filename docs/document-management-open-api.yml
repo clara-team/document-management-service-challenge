@@ -22,8 +22,8 @@
         "tags": [
           "Document Management Service"
         ],
-        "summary": "Upload a PDF document",
-        "description": " Handles PDF upload along with its metadata.\n The file is stored in MinIO and the metadata is persisted\n",
+        "summary": "Upload a document",
+        "description": "Uploads a PDF document with metadata and returns its unique ID.",
         "operationId": "upload",
         "requestBody": {
           "description": "Multipart request containing a PDF file (up to 500 MB) and its metadata in JSON\nformat.",
@@ -37,8 +37,21 @@
           "required": true
         },
         "responses": {
-          "200": {
+          "201": {
             "description": "Document uploaded successfully",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/UploadDocumentResponse"
+                },
+                "example": {
+                  "documentId": "a12b34cd-56ef-7890-ab12-cd34ef56ab78"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid metadata or file",
             "content": {
               "*/*": {
                 "schema": {
@@ -47,8 +60,8 @@
               }
             }
           },
-          "400": {
-            "description": "Invalid input parameters",
+          "409": {
+            "description": "Duplicate document detected",
             "content": {
               "*/*": {
                 "schema": {
@@ -75,21 +88,31 @@
         "tags": [
           "Document Management Service"
         ],
+        "summary": "Download a document",
+        "description": "Downloads the document content by its unique ID.",
         "operationId": "download",
         "parameters": [
           {
             "name": "id",
             "in": "path",
+            "description": "Unique ID of the document",
             "required": true,
             "schema": {
               "type": "string",
               "format": "uuid"
-            }
+            },
+            "example": "a12b34cd-56ef-7890-ab12-cd34ef56ab78"
           }
         ],
         "responses": {
           "200": {
             "description": "OK",
+            "content": {
+              "application/pdf": {}
+            }
+          },
+          "404": {
+            "description": "Document not found",
             "content": {
               "*/*": {
                 "schema": {
