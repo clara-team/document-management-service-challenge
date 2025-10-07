@@ -1,9 +1,10 @@
+version: '3.8'
+
 services:
   postgresql:
+    image: postgres:15
     container_name: postgresql_container
-    ## The tag "bitnami/postgresql:15.4.0" is invalid,
-    ## switched to a valid image instead (postgres:latest).
-    image: postgres:latest
+    restart: always
     ports:
       - "5432:5432"
     networks:
@@ -30,29 +31,34 @@ services:
       - challenge_minio_data:/data
 #   Include all the necessary settings to include a document management service in the stack
 #   Remember to configure this service to limit the memory to 50MB
-#  document-management-service:
-#    build:
-#      context: ..
-#      dockerfile: docker/Dockerfile
-#    container_name: doc-service
-#    restart: on-failure
-#    ports:
-#      - "8080:8080"
-#    environment:
-#      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${POSTGRESQL_DB}
-#      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
-#      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
-#      MINIO_ENDPOINT: http://minio:9000
-#      MINIO_ACCESS_KEY: ${MINIO_ROOT_USER}
-#      MINIO_SECRET_KEY: ${MINIO_ROOT_PASSWORD}
-#      JAVA_OPTS: -Xmx50m -Xms50m
-#    depends_on:
-#      - postgresql
-#      - minio
-#    deploy:
-#      resources:
-#        limits:
-#          memory: 50M
+  document-management-service:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: doc-service
+    restart: on-failure
+    ports:
+      - "8080:8080"
+    env_file:
+      - local.env
+    environment:
+      environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgresql:5432/${POSTGRES_DB}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      MINIO_ENDPOINT: http://minio:9000
+      MINIO_ACCESS_KEY: ${MINIO_ROOT_USER}
+      MINIO_SECRET_KEY: ${MINIO_ROOT_PASSWORD}
+      JAVA_TOOL_OPTIONS: -Xmx50m -Xms32m
+    depends_on:
+      - postgresql
+      - minio
+    networks:
+      - batch_network
+    deploy:
+      resources:
+        limits:
+          memory: 512M
 
 volumes:
   challenge_postgresql_data:

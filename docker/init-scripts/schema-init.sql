@@ -32,7 +32,7 @@ DO $$
     END $$;
 
 CREATE INDEX IF NOT EXISTS idx_documents_checksum ON document_schema.documents (checksum);
-CREATE UNIQUE INDEX IF NOT EXISTS uq_documents_checksum ON document_schema.documents (checksum);
+CREATE INDEX IF NOT EXISTS uq_documents_checksum ON document_schema.documents (checksum);
 CREATE INDEX IF NOT EXISTS idx_documents_user_id ON document_schema.documents (user_id);
 CREATE INDEX IF NOT EXISTS idx_documents_status ON document_schema.documents (status);
 -- search by document_name
