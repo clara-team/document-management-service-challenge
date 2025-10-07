@@ -1,18 +1,26 @@
+security:
+  jwt:
+    secret: "test-secret-key-32chars-minxxxxxxxxxxxx"
 spring:
-  sql:
-    init:
-      mode: never
   datasource:
-    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    url: jdbc:h2:mem:testdb;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DB_CLOSE_DELAY=-1
     driver-class-name: org.h2.Driver
     username: sa
     password:
   jpa:
     hibernate:
       ddl-auto: create-drop
-    show-sql: false
-    database-platform: org.hibernate.dialect.H2Dialect
-
+    properties:
+      hibernate.default_schema: document_schema
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:db/init-h2.sql
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: false
 logging:
   level:
     org.hibernate.sql: DEBUG

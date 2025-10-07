@@ -10,6 +10,20 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+/**
+ * The JwtTokenProvider class is responsible for the creation and management of JSON Web Tokens
+ * (JWT). It generates tokens containing user-specific information to be used for authentication and
+ * authorization. This class employs a secret key-based signing mechanism to ensure the integrity
+ * and authenticity of the tokens.
+ *
+ * <p>Key Features: - Generates JWT token using the HMAC SHA-512 signing algorithm. - Sets essential
+ * JWT claims including subject, roles, issued date, and expiration time. - Uses `JwtProperties` to
+ * retrieve the secret key required for token signing.
+ *
+ * <p>Dependencies: - JwtProperties: Configuration class for managing JWT-related properties such as
+ * the secret key. - TokenResponse: Data structure to encapsulate JWT-related details like token
+ * string, token type, and expiration duration.
+ */
 @Component
 @RequiredArgsConstructor
 public class JwtTokenProvider {
