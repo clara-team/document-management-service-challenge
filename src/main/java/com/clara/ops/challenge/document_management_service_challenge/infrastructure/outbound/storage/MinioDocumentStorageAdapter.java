@@ -5,7 +5,9 @@ import com.clara.ops.challenge.document_management_service_challenge.infrastruct
 import com.clara.ops.challenge.document_management_service_challenge.infrastructure.exception.StorageException;
 import io.minio.*;
 import io.minio.http.Method;
+import jakarta.annotation.PostConstruct;
 import java.io.InputStream;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,8 +37,28 @@ public class MinioDocumentStorageAdapter implements DocumentStoragePort {
   private final MinioClient minioClient;
   private final MinioProperties minioProperties;
 
+  @PostConstruct
+  void validateConfiguration() {
+    Objects.requireNonNull(minioClient, "MinIO client must not be null");
+    Objects.requireNonNull(minioProperties, "MinIO properties must not be null");
+
+    String bucketName = minioProperties.getBucketName();
+    if (bucketName == null) {
+      log.error("Bucket name must not be null or blank");
+      throw new IllegalArgumentException("Bucket name must not be null or blank");
+    }
+    log.debug("V MinioDocumentStorageAdapter initialized with bucket '{}'", bucketName);
+  }
+
   @Override
   public String uploadFile(MultipartFile file, String userId) {
+
+    if (file == null || file.isEmpty()) {
+      throw new StorageException(
+          "File is empty or invalid",
+          new IllegalArgumentException("File must not be empty or null"));
+    }
+
     String bucketName = minioProperties.getBucketName();
     String objectPath = String.format("%s/%s", userId, file.getOriginalFilename());
 
@@ -53,6 +75,9 @@ public class MinioDocumentStorageAdapter implements DocumentStoragePort {
 
       return objectPath;
 
+    } catch (IllegalArgumentException e) {
+      log.error("Invalid configuration: {}", e.getMessage(), e);
+      throw new StorageException("Invalid configuration: " + e.getMessage(), e);
     } catch (Exception e) {
       log.error(
           "Failed to upload file '{}' to bucket '{}': {}",
@@ -101,6 +126,11 @@ public class MinioDocumentStorageAdapter implements DocumentStoragePort {
   }
 
   private void ensureBucketExists(String bucketName) {
+    if (bucketName == null) {
+      throw new StorageException(
+          "Bucket name must not be null or blank",
+          new IllegalArgumentException("Bucket name must not be null or blank"));
+    }
     try {
       boolean exists =
           minioClient.bucketExists(BucketExistsArgs.builder().bucket(bucketName).build());
