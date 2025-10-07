@@ -13,7 +13,7 @@ spring:
     name: document-management-service
 
   datasource:
-    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${POSTGRES_DB:challenge}
+    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${POSTGRES_DB}
     username: ${POSTGRES_USER}
     password: ${POSTGRES_PASSWORD}
     driver-class-name: org.postgresql.Driver
@@ -53,8 +53,8 @@ security:
 
 minio:
   url: http://localhost:9000
-  access-key: ${MINIO_ROOT_USER:minioadmin}
-  secret-key: ${MINIO_ROOT_PASSWORD:minioadmin}
+  access-key: ${MINIO_ROOT_USER}
+  secret-key: ${MINIO_ROOT_PASSWORD}
   bucket-name: documents
 
 springdoc:
@@ -75,3 +75,10 @@ logging:
     com.zaxxer.hikari: DEBUG
     org.hibernate.SQL: DEBUG
     org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+
+deploy:
+  resources:
+    limits:
+      memory: 256M
+environment:
+  JAVA_TOOL_OPTIONS: -Xmx128m -Xms64m
