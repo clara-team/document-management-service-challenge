@@ -1,0 +1,35 @@
+spring:
+  application:
+    name: document-management-service
+
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        default_schema: document_schema
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: false
+
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 500MB
+      max-request-size: 505MB
+      # Using forced threshold for keeping memory usage low.
+      file-size-threshold: 0B
+
+minio:
+  endpoint: ${MINIO_ENDPOINT}
+  access-key: ${MINIO_ACCESS_KEY}
+  secret-key: ${MINIO_SECRET_KEY}
+  bucket: ${MINIO_BUCKET:document-bucket}
+
+server:
+  port: 8080

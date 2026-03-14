@@ -1,29 +1,29 @@
 services:
   postgresql:
     container_name: postgresql_container
-    image: bitnami/postgresql:15.4.0
+    image: docker.io/bitnamilegacy/postgresql:15
     ports:
-      - "5432:5432"
+      - "6432:5432"
     networks:
       - batch_network
     volumes:
       - challenge_postgresql_data:/bitnami/postgresql
       - ./init-scripts:/docker-entrypoint-initdb.d
     environment:
-      - POSTGRESQL_USERNAME={CHANGE_ME}
-      - POSTGRESQL_PASSWORD={CHANGE_ME}
+      - POSTGRESQL_USERNAME=root
+      - POSTGRESQL_PASSWORD=root
       - POSTGRESQL_DATABASE=challenge
-      - POSTGRESQL_POSTGRES_PASSWORD={CHANGE_ME} # Password of user "postgres"
+      - POSTGRESQL_POSTGRES_PASSWORD=root # Password of user "postgres"
   minio:
-    image: minio/minio:latest
+    image: minio/minio:RELEASE.2025-01-20T14-49-07Z
     container_name: minio
     restart: always
     ports:
       - "9000:9000"  # API S3
       - "9001:9001"  # MinIO Web Console
     environment:
-      MINIO_ROOT_USER: {CHANGE_ME}
-      MINIO_ROOT_PASSWORD: {CHANGE_ME}
+      MINIO_ROOT_USER: admin
+      MINIO_ROOT_PASSWORD: root12345
     command: server --console-address ":9001" /data
     volumes:
       - challenge_minio_data:/data
