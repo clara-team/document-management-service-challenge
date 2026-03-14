@@ -30,6 +30,7 @@ minio:
   access-key: ${MINIO_ACCESS_KEY}
   secret-key: ${MINIO_SECRET_KEY}
   bucket: ${MINIO_BUCKET:document-bucket}
+  presign-url-expiration: 15 # in minutes
 
 server:
   port: 8080
