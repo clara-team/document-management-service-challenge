@@ -17,7 +17,7 @@ paths:
       operationId: uploadDocument
       requestBody:
         content:
-          application/json:
+          multipart/form-data:
             schema:
               $ref: '#/components/schemas/UploadDocument'
         required: true
@@ -199,11 +199,16 @@ components:
   schemas:
     UploadDocument:
       required:
+        - file
         - name
         - tags
         - user
       type: object
       properties:
+        file:
+          type: string
+          format: binary
+          description: The file to upload.
         user:
           type: string
           description: The user who uploaded the document.
