@@ -60,8 +60,10 @@ public class DocumentUploadService {
     }
 
     private String buildObjectPath(String userName, String documentName) {
-        String safeUser = userName.replaceAll("[^a-zA-Z0-9._-]", "_");
-        String safeName = documentName.replaceAll("[^a-zA-Z0-9._-]", "_");
+        String safeUser =
+                userName.replaceAll("[^a-zA-Z0-9._-]", "_").replaceAll("\\.{2,}", "_");
+        String safeName =
+                documentName.replaceAll("[^a-zA-Z0-9._-]", "_").replaceAll("\\.{2,}", "_");
         return safeUser + "/" + safeName;
     }
 
