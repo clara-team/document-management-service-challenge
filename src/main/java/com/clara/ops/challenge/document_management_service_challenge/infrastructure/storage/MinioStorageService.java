@@ -8,8 +8,10 @@ import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
 import io.minio.http.Method;
 import jakarta.annotation.PostConstruct;
+
 import java.io.InputStream;
 import java.util.concurrent.TimeUnit;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -31,6 +33,7 @@ public class MinioStorageService {
             boolean exists =
                     minioClient.bucketExists(
                             BucketExistsArgs.builder().bucket(properties.getBucket()).build());
+            System.out.println("Bucket exists: " + exists);
             if (!exists) {
                 minioClient.makeBucket(
                         MakeBucketArgs.builder().bucket(properties.getBucket()).build());
