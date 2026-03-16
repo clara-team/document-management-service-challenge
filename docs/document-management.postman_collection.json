@@ -1,0 +1,185 @@
+{
+  "info": {
+    "name": "Document Management Service",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080/document-management"
+    }
+  ],
+  "item": [
+    {
+      "name": "Upload Document",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/upload",
+          "host": ["{{baseUrl}}"],
+          "path": ["upload"]
+        },
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "user",
+              "value": "alice",
+              "type": "text"
+            },
+            {
+              "key": "name",
+              "value": "contrato-2024.pdf",
+              "type": "text"
+            },
+            {
+              "key": "tags",
+              "value": "legal",
+              "type": "text"
+            },
+            {
+              "key": "tags",
+              "value": "2024",
+              "type": "text"
+            },
+            {
+              "key": "file",
+              "type": "file",
+              "src": []
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Search Documents - All",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/search?page=1&size=20",
+          "host": ["{{baseUrl}}"],
+          "path": ["search"],
+          "query": [
+            { "key": "page", "value": "1" },
+            { "key": "size", "value": "20" }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{}",
+          "options": { "raw": { "language": "json" } }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Search Documents - By User",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/search?page=1&size=20",
+          "host": ["{{baseUrl}}"],
+          "path": ["search"],
+          "query": [
+            { "key": "page", "value": "1" },
+            { "key": "size", "value": "20" }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"user\": \"alice\"\n}",
+          "options": { "raw": { "language": "json" } }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Search Documents - By Tags",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/search?page=1&size=20",
+          "host": ["{{baseUrl}}"],
+          "path": ["search"],
+          "query": [
+            { "key": "page", "value": "1" },
+            { "key": "size", "value": "20" }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"tags\": [\"legal\", \"2024\"]\n}",
+          "options": { "raw": { "language": "json" } }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Search Documents - By User, Name and Tags",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/search?page=1&size=20",
+          "host": ["{{baseUrl}}"],
+          "path": ["search"],
+          "query": [
+            { "key": "page", "value": "1" },
+            { "key": "size", "value": "20" }
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"user\": \"alice\",\n  \"name\": \"contrato-2024.pdf\",\n  \"tags\": [\"legal\"]\n}",
+          "options": { "raw": { "language": "json" } }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Download Document",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/download/:documentId",
+          "host": ["{{baseUrl}}"],
+          "path": ["download", ":documentId"],
+          "variable": [
+            {
+              "key": "documentId",
+              "value": "00000000-0000-0000-0000-000000000000",
+              "description": "Replace with a real document UUID from the search response"
+            }
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}

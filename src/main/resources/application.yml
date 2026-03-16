@@ -23,11 +23,9 @@ spring:
 
   servlet:
     multipart:
-      enabled: true
-      max-file-size: 500MB
-      max-request-size: 505MB
-      # Using forced threshold for keeping memory usage low.
-      file-size-threshold: 0B
+      # Disabled — multipart is parsed manually using Commons FileUpload 2 streaming API,
+      # which pipes bytes directly from the HTTP connection to MinIO without writing to disk.
+      enabled: false
 
 minio:
   endpoint: ${MINIO_ENDPOINT}
@@ -38,3 +36,10 @@ minio:
 
 server:
   port: 8080
+  tomcat:
+    # Allow all 10 concurrent upload requests to hold a connection while waiting for the semaphore.
+    max-threads: 20
+    accept-count: 10
+    # 1 hour — with 10 uploads queued 2 at a time, the last request can wait up to
+    # 4 full upload cycles before getting a slot. Time is not a constraint.
+    connection-timeout: 3600000

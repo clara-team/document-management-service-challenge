@@ -95,8 +95,6 @@ services:
       resources:
         limits:
           memory: 200M
-    tmpfs:
-      - /tmp:size=2g,mode=1777
 
 volumes:
   challenge_postgresql_data:

@@ -21,8 +21,8 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class MinioStorageService {
 
-    // 10 MB part size for multipart uploads. This allows the SDK to manage memory efficiently for large files.
-    private static final long PART_SIZE = 10L * 1024 * 1024;
+    // 1 MB part size — minimizes heap pressure under the 50MB constraint with 10 parallel uploads.
+    private static final long PART_SIZE = 5L * 1024 * 1024;
 
     private final MinioClient minioClient;
     private final MinioProps properties;
@@ -57,6 +57,12 @@ public class MinioStorageService {
                             .build());
             log.info("Uploaded object to MinIO: {}", objectPath);
         } catch (Exception e) {
+            log.error("Error uploading to MinIO [path={}] exceptionType={} message={} cause={}",
+                    objectPath,
+                    e.getClass().getName(),
+                    e.getMessage(),
+                    e.getCause() != null ? e.getCause().getMessage() : "none",
+                    e);
             throw new StorageException("Failed to upload object to MinIO: " + objectPath, e);
         }
     }
