@@ -33,7 +33,7 @@ public class MinioStorageService {
             boolean exists =
                     minioClient.bucketExists(
                             BucketExistsArgs.builder().bucket(properties.getBucket()).build());
-            System.out.println("Bucket exists: " + exists);
+            log.info("Bucket exists: {}", exists);
             if (!exists) {
                 minioClient.makeBucket(
                         MakeBucketArgs.builder().bucket(properties.getBucket()).build());

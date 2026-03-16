@@ -7,6 +7,7 @@ import com.clara.ops.challenge.document_management_service_challenge.application
 import com.clara.ops.challenge.document_management_service_challenge.application.service.DocumentSearchService;
 import com.clara.ops.challenge.document_management_service_challenge.application.service.DocumentUploadService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -41,7 +42,7 @@ public class DocumentManagementController {
     public ResponseEntity<PaginatedDocumentSearch> searchDocuments(
             @RequestBody(required = false) DocumentSearchFilters filters,
             @RequestParam(defaultValue = "1") @Min(1) int page,
-            @RequestParam(defaultValue = "20") @Min(1) int size) {
+            @RequestParam(defaultValue = "20") @Min(1) @Max(100) int size) {
 
         DocumentSearchFilters safeFilters = filters != null ? filters : new DocumentSearchFilters();
         return ResponseEntity.ok(searchService.search(safeFilters, page, size));

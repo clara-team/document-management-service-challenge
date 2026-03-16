@@ -3,17 +3,12 @@ package com.clara.ops.challenge.document_management_service_challenge.applicatio
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
-import lombok.Builder;
-import lombok.Getter;
 
-@Getter
-@Builder
-public class DocumentDetailResponseDto {
-    private UUID id;
-    private String user;
-    private String name;
-    private List<String> tags;
-    private Long size;
-    private String type;
-    private LocalDateTime createdAt;
-}
+public record DocumentDetailResponseDto(
+    UUID id,
+    String user,
+    String name,
+    List<String> tags,
+    Long size,
+    String type,
+    LocalDateTime createdAt) {}

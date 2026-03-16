@@ -70,12 +70,7 @@ public class GlobalExceptionHandler {
 
     private ResponseEntity<ErrorResponse> build(HttpStatus status, String message) {
         ErrorResponse body =
-                ErrorResponse.builder()
-                        .status(status.value())
-                        .error(status.getReasonPhrase())
-                        .message(message)
-                        .timestamp(LocalDateTime.now())
-                        .build();
+                new ErrorResponse(status.value(), status.getReasonPhrase(), message, LocalDateTime.now());
         return ResponseEntity.status(status).body(body);
     }
 }

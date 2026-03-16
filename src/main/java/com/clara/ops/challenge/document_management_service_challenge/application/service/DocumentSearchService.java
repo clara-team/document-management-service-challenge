@@ -5,7 +5,6 @@ import com.clara.ops.challenge.document_management_service_challenge.application
 import com.clara.ops.challenge.document_management_service_challenge.application.dto.PaginatedDocumentSearch;
 import com.clara.ops.challenge.document_management_service_challenge.application.dto.PaginationMetadata;
 import com.clara.ops.challenge.document_management_service_challenge.domain.entity.DocumentEntity;
-
 import com.clara.ops.challenge.document_management_service_challenge.domain.repository.DocumentRepository;
 import com.clara.ops.challenge.document_management_service_challenge.domain.repository.DocumentSpecifications;
 import lombok.RequiredArgsConstructor;
@@ -33,10 +32,9 @@ public class DocumentSearchService {
 
         Page<DocumentEntity> resultPage = documentRepository.findAll(spec, pageable);
 
-        return PaginatedDocumentSearch.builder()
-                .metadata(buildMetadata(resultPage))
-                .documents(resultPage.getContent().stream().map(this::toResponse).toList())
-                .build();
+        return new PaginatedDocumentSearch(
+                buildMetadata(resultPage),
+                resultPage.getContent().stream().map(this::toResponse).toList());
     }
 
     private Specification<DocumentEntity> buildSpecification(DocumentSearchFilters filters) {
@@ -60,25 +58,22 @@ public class DocumentSearchService {
     }
 
     private PaginationMetadata buildMetadata(Page<DocumentEntity> page) {
-        return PaginationMetadata.builder()
-                .currentPage(page.getNumber() + 1)
-                .itemsPerPage(page.getSize())
-                .currentItems(page.getNumberOfElements())
-                .totalPages(page.getTotalPages())
-                .totalItems(page.getTotalElements())
-                .build();
+        return new PaginationMetadata(
+                page.getNumber() + 1,
+                page.getSize(),
+                page.getNumberOfElements(),
+                page.getTotalPages(),
+                page.getTotalElements());
     }
 
     private DocumentDetailResponseDto toResponse(DocumentEntity entity) {
-        return DocumentDetailResponseDto.builder()
-                .id(entity.getId())
-                .user(entity.getUserName())
-                .name(entity.getName())
-                .tags(entity.getTags())
-                .size(entity.getFileSize())
-                .type(entity.getFileType())
-                .createdAt(entity.getCreatedAt())
-                .build();
+        return new DocumentDetailResponseDto(
+                entity.getId(),
+                entity.getUserName(),
+                entity.getName(),
+                entity.getTags(),
+                entity.getFileSize(),
+                entity.getFileType(),
+                entity.getCreatedAt());
     }
-
 }

@@ -47,7 +47,7 @@ public class DocumentDownloadServiceTest {
 
         var result = downloadService.getDownloadUrl(id);
 
-        assertThat(result.getUrl()).contains("signature=abc");
+        assertThat(result.url()).contains("signature=abc");
     }
 
     @Test
