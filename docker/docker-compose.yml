@@ -24,6 +24,8 @@ services:
     environment:
       MINIO_ROOT_USER: clara
       MINIO_ROOT_PASSWORD: admin123
+      MINIO_ACCESS_KEY: "X3TRXWWFAN71CU01TQ0Z"
+      MINIO_SECRET_KEY: "X6R4z4oDUhF14S4TIFe4mAVVw7qYyTj+j8pkZ167"
     command: server --console-address ":9001" /data
     volumes:
       - challenge_minio_data:/data

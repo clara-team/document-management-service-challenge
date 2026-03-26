@@ -11,7 +11,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Schema(description = "The request to upload a document.")
-public class UploadDocument {
+public class UploadDocumentRequest {
 
     @Schema(description = "The user who uploaded the document.")
     private String user;

@@ -14,8 +14,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigInteger;
 import java.time.ZonedDateTime;
-import java.util.Set;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -43,7 +44,7 @@ public class Document {
     private String filePath;
 
     @Column(name = "file_size")
-    private Long fileSize;
+    private BigInteger fileSize;
 
     @Column(name = "file_type", length = 80)
     private String fileType;
@@ -54,6 +55,6 @@ public class Document {
     private ZonedDateTime createdAt;
 
     @OneToMany(mappedBy = "document")
-    private Set<DocumentTag> documentTags;
+    private List<DocumentTag> documentTags;
 
 }
