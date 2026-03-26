@@ -34,10 +34,9 @@ public class DocumentService {
 
     @Transactional
     public void uploadDocument(MultipartFile file, UploadDocumentRequest uploadDocument) {
-        String filepath = uploadDocument.getUser().concat("/").concat(uploadDocument.getName());;
-        minioService.uploadFile(file, filepath);
+        minioService.uploadFile(file, uploadDocument.getFilePath());
 
-        Document doc = mapper.toDocument(uploadDocument, filepath, file);
+        Document doc = mapper.toDocument(uploadDocument, file);
         repository.save(doc);
 
         Set<DocumentTag> tags = mapper.toDocumentTags(uploadDocument, doc);

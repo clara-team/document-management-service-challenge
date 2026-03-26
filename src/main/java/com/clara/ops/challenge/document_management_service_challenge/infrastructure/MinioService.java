@@ -1,5 +1,6 @@
 package com.clara.ops.challenge.document_management_service_challenge.infrastructure;
 
+import com.clara.ops.challenge.document_management_service_challenge.exception.BusinessException;
 import io.minio.BucketExistsArgs;
 import io.minio.GetPresignedObjectUrlArgs;
 import io.minio.MakeBucketArgs;
@@ -38,7 +39,8 @@ public class MinioService {
 
             log.info("File {} uploaded successfully!", filepath);
         } catch (Exception e) {
-            log.error("Error uploading file {}!", filepath);
+            log.error("Error uploading file {}!", filepath, e);
+            throw new BusinessException("Error uploading file "+filepath);
         }
     }
 
@@ -72,7 +74,8 @@ public class MinioService {
                 log.info("Bucket {} created successfully!", bucketName);
             }
         } catch (Exception e) {
-            log.error("Error creating bucket {}!", bucketName);
+            log.error("Error creating bucket {}!", bucketName, e);
+            throw new BusinessException("Error creating bucket "+bucketName);
         }
     }
 

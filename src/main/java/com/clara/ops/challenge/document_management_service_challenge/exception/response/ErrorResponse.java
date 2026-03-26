@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 
 @Data
 @Builder
@@ -16,5 +18,6 @@ public class ErrorResponse {
     private Integer statusCode;
     private String message;
     private String path;
+    private List<String> errors;
 
 }

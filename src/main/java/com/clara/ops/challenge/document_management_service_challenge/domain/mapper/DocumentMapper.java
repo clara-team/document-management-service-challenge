@@ -19,11 +19,11 @@ import static java.util.stream.Collectors.toSet;
 @Service
 public class DocumentMapper {
 
-    public Document toDocument(UploadDocumentRequest uploadDocument, String filepath, MultipartFile file) {
+    public Document toDocument(UploadDocumentRequest uploadDocument, MultipartFile file) {
         return Document.builder()
                 .username(uploadDocument.getUser())
                 .filename(uploadDocument.getName())
-                .filePath(filepath)
+                .filePath(uploadDocument.getFilePath())
                 .fileSize(BigInteger.valueOf(file.getSize()))
                 .fileType(file.getContentType())
                 .createdAt(ZonedDateTime.now())

@@ -7,6 +7,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jdk.jfr.Timestamp;
 import lombok.AllArgsConstructor;
@@ -31,16 +32,16 @@ public class Document {
     @Column(name = "id")
     private Integer id;
 
-    @NotNull
+    @NotBlank
     @Column(length = 200, nullable = false)
     private String username;
 
-    @NotNull
+    @NotBlank
     @Column(length = 200, nullable = false)
     private String filename;
 
-    @NotNull
-    @Column(name = "file_path", length = 200, nullable = false)
+    @NotBlank
+    @Column(name = "file_path", length = 500, nullable = false)
     private String filePath;
 
     @Column(name = "file_size")

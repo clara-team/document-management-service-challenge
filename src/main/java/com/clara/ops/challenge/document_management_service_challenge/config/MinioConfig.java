@@ -1,6 +1,5 @@
 package com.clara.ops.challenge.document_management_service_challenge.config;
 
-import io.minio.MinioAsyncClient;
 import io.minio.MinioClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

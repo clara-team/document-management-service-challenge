@@ -7,7 +7,7 @@ CREATE TABLE document_schema.document (
      id integer GENERATED ALWAYS AS IDENTITY NOT NULL,
      username varchar(200) NOT NULL,
      filename varchar(200) NOT NULL,
-     file_path varchar(200) NOT NULL,
+     file_path varchar(500) NOT NULL,
      file_size bigint NULL,
      file_type varchar(80) NULL,
      created_at timestamp with time zone NOT NULL,
