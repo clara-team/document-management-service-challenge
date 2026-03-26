@@ -10,16 +10,33 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Objects;
+
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 @Slf4j
 @Hidden
 @RestControllerAdvice
 @RequiredArgsConstructor
 public class AppControllerAdvice {
+
+    @ExceptionHandler({MaxUploadSizeExceededException.class})
+    public ResponseEntity<ErrorResponse> applicationException(MaxUploadSizeExceededException e, HttpServletRequest request) {
+
+        ErrorResponse body = ErrorResponse.builder()
+                .timestamp(ZonedDateTime.now().toString())
+                .statusCode(BAD_REQUEST.value())
+                .message("File size exceeds the maximum allowed limit of 500MB.")
+                .path(request.getServletPath())
+                .build();
+        return ResponseEntity
+                .status(BAD_REQUEST)
+                .body(body);
+    }
 
     @ExceptionHandler({BusinessException.class})
     public ResponseEntity<ErrorResponse> applicationException(BusinessException e, HttpServletRequest request) {

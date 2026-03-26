@@ -15,6 +15,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.SmartValidator;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,12 +29,14 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 
+@Slf4j
 @RestController
 @RequestMapping("/document-management")
 @Tag(name = "Document Management", description = "Endpoints for document management.")
@@ -50,14 +53,12 @@ public class DocumentManagementController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "The document was uploaded successfully.")
     })
-    public void uploadDocument(@RequestPart("file") MultipartFile file, @RequestPart("metadata") String metadata) throws JsonProcessingException {
-        // TODO deve ser testado com arquivos gigantes de 500 mb
+    public void uploadDocument(@RequestPart("file") MultipartFile file, @RequestPart("metadata") String metadata) throws IOException {
         // TODO deve testar 10 em paralelo
         UploadDocumentRequest uploadDocument = convertAndValidateJson(metadata);
         service.uploadDocument(file, uploadDocument);
     }
 
-    // TODO testar sem filtros
     @PostMapping("/search")
     @Operation(operationId = "searchDocuments")
     @ResponseStatus(value = OK)
@@ -95,7 +96,7 @@ public class DocumentManagementController {
         return service.getDocumentDownloadUrl(documentId);
     }
 
-    public UploadDocumentRequest convertAndValidateJson(String metadata) throws JsonProcessingException {
+    private UploadDocumentRequest convertAndValidateJson(String metadata) throws JsonProcessingException {
         UploadDocumentRequest uploadDocument = objectMapper.readValue(metadata, UploadDocumentRequest.class);
 
         BeanPropertyBindingResult bindingResult = new BeanPropertyBindingResult(uploadDocument, UploadDocumentRequest.class.getSimpleName());
