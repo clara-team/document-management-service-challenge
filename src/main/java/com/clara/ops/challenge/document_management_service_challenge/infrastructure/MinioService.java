@@ -1,9 +1,9 @@
 package com.clara.ops.challenge.document_management_service_challenge.infrastructure;
 
 import io.minio.BucketExistsArgs;
+import io.minio.GetPresignedObjectUrlArgs;
 import io.minio.MakeBucketArgs;
 import io.minio.MinioClient;
-import io.minio.ObjectWriteResponse;
 import io.minio.PutObjectArgs;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import static io.minio.http.Method.GET;
 import static org.apache.commons.lang3.BooleanUtils.isFalse;
 
 @Slf4j
@@ -38,6 +39,21 @@ public class MinioService {
             log.info("File {} uploaded successfully!", filepath);
         } catch (Exception e) {
             log.error("Error uploading file {}!", filepath);
+        }
+    }
+
+    public String generatePresignedUrl(String filePath) {
+        try {
+            return minioClient.getPresignedObjectUrl(
+                    GetPresignedObjectUrlArgs.builder()
+                        .bucket(bucketName)
+                        .object(filePath)
+                        .method(GET)
+                        .build()
+            );
+        } catch (Exception e) {
+            log.error("Error generating presigned url!");
+            return null;
         }
     }
 

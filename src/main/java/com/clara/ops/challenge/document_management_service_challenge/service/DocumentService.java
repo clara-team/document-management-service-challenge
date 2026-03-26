@@ -2,12 +2,14 @@ package com.clara.ops.challenge.document_management_service_challenge.service;
 
 import com.clara.ops.challenge.document_management_service_challenge.controller.request.DocumentSearchFiltersRequest;
 import com.clara.ops.challenge.document_management_service_challenge.controller.request.UploadDocumentRequest;
+import com.clara.ops.challenge.document_management_service_challenge.controller.response.DocumentDownloadUrlResponse;
 import com.clara.ops.challenge.document_management_service_challenge.controller.response.PaginatedDocumentSearchResponse;
 import com.clara.ops.challenge.document_management_service_challenge.domain.entity.Document;
 import com.clara.ops.challenge.document_management_service_challenge.domain.entity.DocumentTag;
 import com.clara.ops.challenge.document_management_service_challenge.domain.mapper.DocumentMapper;
 import com.clara.ops.challenge.document_management_service_challenge.domain.repository.IDocumentRepository;
 import com.clara.ops.challenge.document_management_service_challenge.domain.repository.IDocumentTagRepository;
+import com.clara.ops.challenge.document_management_service_challenge.exception.BusinessException;
 import com.clara.ops.challenge.document_management_service_challenge.infrastructure.MinioService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -50,6 +52,14 @@ public class DocumentService {
         Page<Document> documents = repository.searchByFilters(request.getUser(), request.getName(), request.getTags(), pageable);
 
         return mapper.toPaginatedDocumentSearchResponse(documents);
+    }
+
+    public DocumentDownloadUrlResponse getDocumentDownloadUrl(Integer documentId) {
+        String url = repository.findById(documentId)
+                .map(Document::getFilePath)
+                .map(minioService::generatePresignedUrl)
+                .orElseThrow(() -> new BusinessException("Document not found"));
+        return new DocumentDownloadUrlResponse(url);
     }
 
      // TODO sort order não está funcionando

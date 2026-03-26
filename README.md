@@ -158,6 +158,8 @@ Ensure that your solution includes the Dockerfile and database schema script, an
 
 If you have any additional notes, explanations, or assumptions regarding your implementation, feel free to include them in this section. This can help provide more context to reviewers.
 
+Link to swagger: http://localhost:8080/swagger-ui.html
+
 ---
 
 **⚠️ Important Note About the Challenge Completion ⚠️**
