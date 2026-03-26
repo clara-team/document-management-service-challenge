@@ -14,6 +14,8 @@ spring:
     multipart:
       enabled: true
       max-file-size: 500MB
+      max-request-size: 500MB
+      file-size-threshold: 1MB
 
 springdoc:
   api-docs:

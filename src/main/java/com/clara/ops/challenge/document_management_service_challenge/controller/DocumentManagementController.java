@@ -37,6 +37,8 @@ import static org.springframework.http.HttpStatus.OK;
 @RequiredArgsConstructor
 public class DocumentManagementController {
 
+    // TODO deve-se validar enviar campos vazios ou nulos para testar as constraints de entrada
+
     private final DocumentService service;
     private final ObjectMapper objectMapper;
 
@@ -48,6 +50,7 @@ public class DocumentManagementController {
     })
     public void uploadDocument(@RequestPart("file") MultipartFile file, @RequestPart("metadata") String metadata) throws JsonProcessingException {
         // TODO deve ser testado com arquivos gigantes de 500 mb
+        // TODO deve testar 10 em paralelo
         UploadDocumentRequest uploadDocument = objectMapper.readValue(metadata, UploadDocumentRequest.class);
         service.uploadDocument(file, uploadDocument);
     }
