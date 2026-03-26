@@ -54,7 +54,6 @@ public class DocumentManagementController {
             @ApiResponse(responseCode = "201", description = "The document was uploaded successfully.")
     })
     public void uploadDocument(@RequestPart("file") MultipartFile file, @RequestPart("metadata") String metadata) throws IOException {
-        // TODO deve testar 10 em paralelo
         UploadDocumentRequest uploadDocument = convertAndValidateJson(metadata);
         service.uploadDocument(file, uploadDocument);
     }

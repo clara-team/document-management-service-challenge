@@ -5,12 +5,15 @@ import io.minio.BucketExistsArgs;
 import io.minio.GetPresignedObjectUrlArgs;
 import io.minio.MakeBucketArgs;
 import io.minio.MinioClient;
-import io.minio.PutObjectArgs;
+import io.minio.UploadObjectArgs;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
 
 import static io.minio.http.Method.GET;
 import static org.apache.commons.lang3.BooleanUtils.isFalse;
@@ -25,16 +28,23 @@ public class MinioService {
     @Value("${minio.bucketName}")
     private String bucketName;
 
+    @PostConstruct
+    public void init() {
+        createBucketIfNotExists();
+    }
+
     public void uploadFile(MultipartFile file, String filepath) {
         try {
-            createBucketIfNotExists();
+            File tempFile = File.createTempFile("upload-", ".tmp");
+            file.transferTo(tempFile);
 
-            minioClient.putObject(PutObjectArgs.builder()
-                    .bucket(bucketName)
-                    .object(filepath)
-                    .stream(file.getInputStream(), file.getSize(), -1)
-                    .contentType(file.getContentType())
-                    .build()
+            minioClient.uploadObject(
+                    UploadObjectArgs.builder()
+                            .bucket(bucketName)
+                            .object(filepath)
+                            .filename(tempFile.getAbsolutePath())
+                            .contentType(file.getContentType())
+                            .build()
             );
 
             log.info("File {} uploaded successfully!", filepath);
