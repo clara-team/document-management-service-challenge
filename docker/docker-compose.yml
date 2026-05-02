@@ -1,7 +1,7 @@
 services:
   postgresql:
     container_name: postgresql_container
-    image: bitnami/postgresql:15.4.0
+    image: bitnamilegacy/postgresql:15.4.0
     ports:
       - "5432:5432"
     networks:
@@ -10,10 +10,14 @@ services:
       - challenge_postgresql_data:/bitnami/postgresql
       - ./init-scripts:/docker-entrypoint-initdb.d
     environment:
-      - POSTGRESQL_USERNAME={CHANGE_ME}
-      - POSTGRESQL_PASSWORD={CHANGE_ME}
+      - POSTGRESQL_USERNAME=${DB_USER}
+      - POSTGRESQL_PASSWORD=${DB_PASS}
       - POSTGRESQL_DATABASE=challenge
-      - POSTGRESQL_POSTGRES_PASSWORD={CHANGE_ME} # Password of user "postgres"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${DB_USER} -d challenge" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
   minio:
     image: minio/minio:latest
     container_name: minio
@@ -21,21 +25,59 @@ services:
     ports:
       - "9000:9000"  # API S3
       - "9001:9001"  # MinIO Web Console
+    networks:
+      - batch_network
     environment:
-      MINIO_ROOT_USER: {CHANGE_ME}
-      MINIO_ROOT_PASSWORD: {CHANGE_ME}
+      MINIO_ROOT_USER: ${STORAGE_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${STORAGE_ROOT_PASSWORD}
     command: server --console-address ":9001" /data
     volumes:
       - challenge_minio_data:/data
-  # Include all the necessary settings to include a document management service in the stack
-  # Remember to configure this service to limit the memory to 50MB
-  # document-management-service:
-  #    environment:
-  #      - JAVA_OPTS=-Xmx50m -Xms50m
-  #    deploy:
-  #      resources:
-  #        limits:
-  #          memory: 50M
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:9000/minio/health/live" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+  mc:
+    image: minio/mc
+    depends_on:
+      minio:
+        condition: service_healthy
+    entrypoint: >
+      /bin/sh -c "
+      sleep 5;
+      mc alias set myminio http://minio:9000 ${STORAGE_ROOT_USER} ${STORAGE_ROOT_PASSWORD};
+      mc admin user add myminio ${STORAGE_ACCESS_KEY} ${STORAGE_SECRET_KEY} || true;
+      mc admin policy attach myminio readwrite --user=${STORAGE_ACCESS_KEY};
+      exit 0;
+      "
+    networks:
+      - batch_network
+#  document-management-service:
+#    build:
+#      context: ..
+#      dockerfile: Dockerfile
+#    container_name: document_management_service
+#    ports:
+#      - "8080:8080"
+#    networks:
+#      - batch_network
+#    depends_on:
+#      postgresql:
+#        condition: service_healthy
+#      minio:
+#        condition: service_healthy
+#      mc:
+#        condition: service_completed_successfully
+#
+#    environment:
+#      - DB_USER=${DB_USER}
+#      - DB_PASS=${DB_PASS}
+#      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresql_container:5432/challenge?currentSchema=document_schema
+#    deploy:
+#      resources:
+#        limits:
+#          memory: 200M
 
 volumes:
   challenge_postgresql_data:

@@ -1,0 +1,36 @@
+server:
+  port: 8080
+
+spring:
+  servlet:
+    multipart:
+      file-size-threshold: 0B
+      max-file-size: 500MB
+      max-request-size: 500MB
+      location: /tmp
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+  datasource:
+    url: jdbc:postgresql://localhost:5432/challenge?currentSchema=document_schema
+    username: ${DB_USER}
+    password: ${DB_PASS}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 2
+      minimum-idle: 1
+      idle-timeout: 30000
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,metrics
+
+minio:
+  url: ${STORAGE_URL}
+  access-key: ${STORAGE_ACCESS_KEY}
+  secret-key: ${STORAGE_SECRET_KEY}
+  bucket-name: ${STORAGE_BUCKET:document-bucket}
+  expiration: ${MINIO_EXPIRATION:30}
