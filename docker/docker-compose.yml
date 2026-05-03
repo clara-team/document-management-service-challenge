@@ -69,15 +69,19 @@ services:
 #        condition: service_healthy
 #      mc:
 #        condition: service_completed_successfully
-#
 #    environment:
 #      - DB_USER=${DB_USER}
 #      - DB_PASS=${DB_PASS}
 #      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresql_container:5432/challenge?currentSchema=document_schema
+#      - STORAGE_URL=http://minio:9000
+#      - STORAGE_PUBLIC_URL=${STORAGE_PUBLIC_URL:-http://localhost:9000}
+#      - STORAGE_ACCESS_KEY=${STORAGE_ACCESS_KEY}
+#      - STORAGE_SECRET_KEY=${STORAGE_SECRET_KEY}
+#      - STORAGE_BUCKET=${STORAGE_BUCKET}
 #    deploy:
 #      resources:
 #        limits:
-#          memory: 200M
+#          memory: 256M
 
 volumes:
   challenge_postgresql_data:

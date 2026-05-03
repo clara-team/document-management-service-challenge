@@ -10,9 +10,11 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ConfigurationProperties(prefix = "minio")
 public class MinioProperties {
-    private String url;
-    private String accessKey;
-    private String secretKey;
-    private String bucketName;
-    private Integer expiration;
+  private String url;
+  private String publicUrl;
+  private String accessKey;
+  private String secretKey;
+  private String bucketName;
+  private Integer uploadTtl;
+  private Integer downloadTtl;
 }

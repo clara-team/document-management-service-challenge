@@ -1,5 +1,9 @@
 server:
   port: 8080
+  tomcat:
+    threads:
+      max: 10
+      min-spare: 2
 
 spring:
   servlet:
@@ -11,7 +15,8 @@ spring:
   jpa:
     hibernate:
       ddl-auto: none
-    show-sql: true
+    show-sql: false
+    open-in-view: false
   datasource:
     url: jdbc:postgresql://localhost:5432/challenge?currentSchema=document_schema
     username: ${DB_USER}
@@ -22,15 +27,16 @@ spring:
       minimum-idle: 1
       idle-timeout: 30000
 
-management:
-  endpoints:
-    web:
-      exposure:
-        include: health,metrics
-
 minio:
   url: ${STORAGE_URL}
+  public-url: ${STORAGE_PUBLIC_URL:}
   access-key: ${STORAGE_ACCESS_KEY}
   secret-key: ${STORAGE_SECRET_KEY}
   bucket-name: ${STORAGE_BUCKET:document-bucket}
-  expiration: ${MINIO_EXPIRATION:30}
+  download-ttl: ${MINIO_DOWNLOAD_TTL:15}
+  upload-ttl: ${MINIO_UPLOAD_TTL:40}
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html

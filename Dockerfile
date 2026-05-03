@@ -18,4 +18,4 @@ COPY --from=builder /app/target/lib*.so* ./
 
 EXPOSE 8080
 
-ENTRYPOINT ["./document-management-service-challenge", "-Xmx48m"]
+ENTRYPOINT ["./document-management-service-challenge", "-Xmx50m"]
