@@ -1,0 +1,5 @@
+# These owners will be the default owners for everything in the repo.
+* @clara-team/clarops
+
+# Github Management team will be owner for everything on .github/ folder
+.github/ @clara-team/github-management
