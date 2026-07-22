@@ -158,6 +158,54 @@ Ensure that your solution includes the Dockerfile and database schema script, an
 
 If you have any additional notes, explanations, or assumptions regarding your implementation, feel free to include them in this section. This can help provide more context to reviewers.
 
+#### Additional notes
+
+To success execute the different containers, the following steps must be followed:
+
+1. Enter the docker folder with the command **`cd docker`**
+
+2. Changing environment variables in the **.env** file
+
+```sh
+# PostgreSQL DataBase Configuration
+POSTGRESQL_HOST=jdbc:postgresql://postgresql:5432/
+POSTGRESQL_USERNAME=<postgresql_username>
+POSTGRESQL_PASSWORD=<postgresql_password>
+POSTGRESQL_DATABASE=challenge
+POSTGRESQL_POSTGRES_PASSWORD=<user_postgres_password>
+# Minio Configuration
+MINIO_ROOT_USER=<minio_root_user>
+MINIO_ROOT_PASSWORD=<minio_root_password>
+MINIO_ENDPOINT=http://host.docker.internal
+MINIO_PORT_API=9000
+MINIO_SECURE=false
+MINIO_BUCKET_NAME=document-bucket
+MINIO_PART_SIZE=5242880
+MINIO_PERMIT_AVAILABLE=10
+```
+
+3. Start the stack de containers using **`docker-compose up --build`**
+
+### Explanation of the solution approach
+
+To solve the challenge, three optimization strategies for managing large files were considered:
+
+1. **FILE PARTITION**: This consists of partitioning a file into small 5MB chunks (the chunk size is the environment variable MINIO_PART_SIZE).
+2. **DISK UPLOAD**: This consists of uploading the entire file to disk and then sending a single block to the destination server.
+3. **SEMAPHORE**: This consists of creating a semaphore given a number of allowed requests (the number of allowed requests is the environment variable MINIO_PERMIT_AVAILABLE).
+
+#### Test results using **FILE PARTITION** strategy
+
+<img alt="strategy-file-partition-docker-console" src="docs/assets/strategy-file-partition-docker-console.png" width="800" height="379">
+
+#### Test results using **DISK UPLOAD** strategy
+
+<img alt="strategy-disk-upload-docker-console" src="docs/assets/strategy-disk-upload-docker-console.png" width="800" height="424">
+
+#### Test results using **SEMAPHORE** strategy
+
+<img alt="strategy-semaphore-docker-console" src="docs/assets/strategy-semaphore-docker-console.png" width="800" height="393">
+
 ---
 
 **⚠️ Important Note About the Challenge Completion ⚠️**
