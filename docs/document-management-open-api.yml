@@ -1,319 +1,201 @@
-openapi: 3.0.1
-info:
-  title: Management Service API
-  description: All Management Service functionalities
-  version: v0.0.1
-servers:
-  - url: /
-    description: Default Server URL
-tags:
-  - name: Document Management
-    description: Endpoints for document management.
-paths:
-  /document-management/upload:
-    post:
-      tags:
-        - Document Management
-      operationId: uploadDocument
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UploadDocument'
-        required: true
-      responses:
-        '201':
-          description: The document was uploaded successfully.
-        '400':
-          description: Bad Request
-          content:
-            '*/*':
-              schema:
-                type: object
-        '401':
-          description: Unauthorized
-          content:
-            '*/*':
-              schema:
-                type: object
-        '403':
-          description: Forbidden
-          content:
-            '*/*':
-              schema:
-                type: object
-        '404':
-          description: Not Found
-          content:
-            '*/*':
-              schema:
-                type: object
-        '409':
-          description: Conflict
-          content:
-            '*/*':
-              schema:
-                type: object
-        '500':
-          description: Internal Server Error
-          content:
-            '*/*':
-              schema:
-                type: object
-  /document-management/search:
-    post:
-      tags:
-        - Document Management
-      operationId: searchDocuments
-      parameters:
-        - name: page
-          in: query
-          description: Zero-based page index (0..N)
-          required: false
-          schema:
-            minimum: 0
-            type: integer
-            default: 0
-        - name: size
-          in: query
-          description: The size of the page to be returned
-          required: false
-          schema:
-            minimum: 1
-            type: integer
-            default: 20
-        - name: sort
-          in: query
-          description: >-
-            Sorting criteria in the format: property,(asc|desc). Default sort
-            order is ascending. Multiple sort criteria are supported.
-          required: false
-          schema:
-            type: array
-            items:
-              type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/DocumentSearchFilters'
-        required: true
-      responses:
-        '200':
-          description: The documents were found successfully.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PaginatedDocumentSearch'
-        '400':
-          description: Bad Request
-          content:
-            '*/*':
-              schema:
-                type: object
-        '401':
-          description: Unauthorized
-          content:
-            '*/*':
-              schema:
-                type: object
-        '403':
-          description: Forbidden
-          content:
-            '*/*':
-              schema:
-                type: object
-        '404':
-          description: Not Found
-          content:
-            '*/*':
-              schema:
-                type: object
-        '409':
-          description: Conflict
-          content:
-            '*/*':
-              schema:
-                type: object
-        '500':
-          description: Internal Server Error
-          content:
-            '*/*':
-              schema:
-                type: object
-  /document-management/download/{documentId}:
-    get:
-      tags:
-        - Document Management
-      operationId: downloadDocument
-      parameters:
-        - name: documentId
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: OK
-          content:
-            '*/*':
-              schema:
-                $ref: '#/components/schemas/DocumentDownloadUrl'
-        '400':
-          description: Bad Request
-          content:
-            '*/*':
-              schema:
-                type: object
-        '401':
-          description: Unauthorized
-          content:
-            '*/*':
-              schema:
-                type: object
-        '403':
-          description: Forbidden
-          content:
-            '*/*':
-              schema:
-                type: object
-        '404':
-          description: Not Found
-          content:
-            '*/*':
-              schema:
-                type: object
-        '409':
-          description: Conflict
-          content:
-            '*/*':
-              schema:
-                type: object
-        '500':
-          description: Internal Server Error
-          content:
-            '*/*':
-              schema:
-                type: object
-components:
-  schemas:
-    UploadDocument:
-      required:
-        - name
-        - tags
-        - user
-      type: object
-      properties:
-        user:
-          type: string
-          description: The user who uploaded the document.
-        name:
-          type: string
-          description: The document name.
-        tags:
-          type: array
-          description: The document tags.
-          items:
-            type: string
-            description: The document tags.
-      description: The request to upload a document.
-    DocumentSearchFilters:
-      type: object
-      properties:
-        user:
-          type: string
-          description: The user who uploaded the document.
-          nullable: true
-        name:
-          type: string
-          description: The document name.
-          nullable: true
-        tags:
-          type: array
-          description: The document tags.
-          nullable: true
-          items:
-            type: string
-            description: The document tags.
-            nullable: true
-      description: The document search filters.
-    Document:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The document ID.
-        user:
-          type: string
-          description: The user who uploaded the document.
-        name:
-          type: string
-          description: The document name.
-        tags:
-          type: array
-          description: The document tags.
-          items:
-            type: string
-            description: The document tags.
-        size:
-          type: integer
-          description: The document size in bytes.
-          format: int32
-        type:
-          type: string
-          description: The document type.
-        createdAt:
-          type: string
-          description: The document creation date.
-      description: The document DTO.
-    Metadata:
-      type: object
-      properties:
-        currentPage:
-          type: integer
-          description: The current page. It starts at 0.
-          format: int32
-          example: 1
-        itemsPerPage:
-          type: integer
-          description: The number of items per page, requested by the client.
-          format: int32
-          example: 10
-        currentItems:
-          type: integer
-          description: >-
-            The number of items in the current page. It may be less than the
-            number of items per page, if the current page is the last one.
-          format: int32
-          example: 9
-        totalPages:
-          type: integer
-          description: >-
-            The total number of pages. It is calculated using the total number
-            of items and the number of items per page.
-          format: int32
-          example: 2
-        totalItems:
-          type: integer
-          description: The total number of items.
-          format: int32
-          example: 19
-      description: The metadata for the pagination.
-    PaginatedDocumentSearch:
-      type: object
-      properties:
-        metadata:
-          $ref: '#/components/schemas/Metadata'
-        documents:
-          type: array
-          description: The list of documents.
-          items:
-            $ref: '#/components/schemas/Document'
-      description: The paginated document search response.
-    DocumentDownloadUrl:
-      type: object
-      properties:
-        url:
-          type: string
-          description: The document download URL.
-      description: The document download URL.
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "OpenAPI definition",
+    "version": "v0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080",
+      "description": "Generated server url"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Document Management Service",
+      "description": "API for managing PDF documents"
+    }
+  ],
+  "paths": {
+    "/api/v1/document-management/upload": {
+      "post": {
+        "tags": [
+          "Document Management Service"
+        ],
+        "summary": "Upload a document",
+        "description": "Uploads a PDF document with metadata and returns its unique ID.",
+        "operationId": "upload",
+        "requestBody": {
+          "description": "Multipart request containing a PDF file (up to 500 MB) and its metadata in JSON\nformat.",
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/DocumentMetadata"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Document uploaded successfully",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/UploadDocumentResponse"
+                },
+                "example": {
+                  "documentId": "a12b34cd-56ef-7890-ab12-cd34ef56ab78"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid metadata or file",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/UploadDocumentResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Duplicate document detected",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/UploadDocumentResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/UploadDocumentResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/document-management/{id}/download": {
+      "get": {
+        "tags": [
+          "Document Management Service"
+        ],
+        "summary": "Download a document",
+        "description": "Downloads the document content by its unique ID.",
+        "operationId": "download",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Unique ID of the document",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "example": "a12b34cd-56ef-7890-ab12-cd34ef56ab78"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/pdf": {}
+            }
+          },
+          "404": {
+            "description": "Document not found",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/token": {
+      "get": {
+        "tags": [
+          "auth-controller"
+        ],
+        "operationId": "generateToken",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokenResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "DocumentMetadata": {
+        "type": "object",
+        "properties": {
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "userId": {
+            "type": "string"
+          }
+        }
+      },
+      "UploadDocumentResponse": {
+        "type": "object",
+        "properties": {
+          "documentId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "TokenResponse": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "expiresIn": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      }
+    }
+  }
+}
