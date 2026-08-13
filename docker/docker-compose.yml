@@ -10,10 +10,10 @@ services:
       - challenge_postgresql_data:/bitnami/postgresql
       - ./init-scripts:/docker-entrypoint-initdb.d
     environment:
-      - POSTGRESQL_USERNAME={CHANGE_ME}
-      - POSTGRESQL_PASSWORD={CHANGE_ME}
+      - POSTGRESQL_USERNAME=${POSTGRESQL_USERNAME}
+      - POSTGRESQL_PASSWORD=${POSTGRESQL_PASSWORD}
       - POSTGRESQL_DATABASE=challenge
-      - POSTGRESQL_POSTGRES_PASSWORD={CHANGE_ME} # Password of user "postgres"
+      - POSTGRESQL_POSTGRES_PASSWORD=${POSTGRESQL_POSTGRES_PASSWORD}
   minio:
     image: minio/minio:latest
     container_name: minio
@@ -22,8 +22,8 @@ services:
       - "9000:9000"  # API S3
       - "9001:9001"  # MinIO Web Console
     environment:
-      MINIO_ROOT_USER: {CHANGE_ME}
-      MINIO_ROOT_PASSWORD: {CHANGE_ME}
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
     command: server --console-address ":9001" /data
     volumes:
       - challenge_minio_data:/data
