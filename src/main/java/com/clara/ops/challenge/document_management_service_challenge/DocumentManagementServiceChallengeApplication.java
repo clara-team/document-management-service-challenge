@@ -3,7 +3,8 @@ package com.clara.ops.challenge.document_management_service_challenge;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-@SpringBootApplication
+@SpringBootApplication(
+    scanBasePackages = "com.clara.ops.challenge.document_management_service_challenge")
 public class DocumentManagementServiceChallengeApplication {
 
   public static void main(String[] args) {

@@ -1,0 +1,26 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/document-management
+    username: postgres
+    password: admin
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+
+minio:
+  url: http://localhost:9000
+  accessKey: kf77oCyNewJGCH3qcOgO
+  secretKey: tODa3sJNTZLWLysOArHcSDelEyjqQPFyIQKk3c2e
+  bucket: document-bucket
+
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
